@@ -28,50 +28,6 @@ public class BeatStructure {
             return time;
         }
     }
-
-    // Some standard beat structures
-    public enum StandardBeatStructure {
-        SIMPLE_NOTE_STRUCTURE(new BeatStructure(Collections.singletonList(
-                SIMPLE_NOTE))),
-        EIGHTH_NOTE_STRUCTURE(new BeatStructure(Arrays.asList(
-                EIGHTH_NOTE,                
-                EIGHTH_NOTE))),
-        SIXTEENTH_NOTE_STRUCTURE(new BeatStructure(Arrays.asList(
-                SIXTEENTH_NOTE,
-                SIXTEENTH_NOTE,
-                SIXTEENTH_NOTE,
-                SIXTEENTH_NOTE))),
-        THIRTY_SECOND_NOTE_STRUCTURE(new BeatStructure(Arrays.asList(
-                THIRTY_SECOND_NOTE,
-                THIRTY_SECOND_NOTE,
-                THIRTY_SECOND_NOTE,
-                THIRTY_SECOND_NOTE,
-                THIRTY_SECOND_NOTE,
-                THIRTY_SECOND_NOTE,
-                THIRTY_SECOND_NOTE,
-                THIRTY_SECOND_NOTE))),
-        TRIPLET_NOTE_STRUCTURE(new BeatStructure(Arrays.asList(
-                TRIPLET_NOTE,
-                TRIPLET_NOTE,
-                TRIPLET_NOTE))),
-        QUAVER_TRIPLET_STRUCTURE(new BeatStructure(Arrays.asList(
-                QUAVER_TRIPLET_NOTE,
-                QUAVER_TRIPLET_NOTE,
-                QUAVER_TRIPLET_NOTE,
-                QUAVER_TRIPLET_NOTE,
-                QUAVER_TRIPLET_NOTE,
-                QUAVER_TRIPLET_NOTE)));
-
-        private BeatStructure structure;
-
-        StandardBeatStructure(BeatStructure beatStructure) {
-            this.structure = beatStructure;
-        }
-
-        public BeatStructure getBeatStructure() {
-            return structure;
-        }
-    }
     
     
     // The array structure represents all the notes and their respective time in a beat
