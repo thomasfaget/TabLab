@@ -69,12 +69,19 @@ public class MusicPartition {
 
 
     /**
-     * print the partition
+     * Print the partition
+     * Use this method for debugging
      */
     public void printPartition() {
         StringBuilder upperLowerString = new StringBuilder("---");
+        StringBuilder title1 = new StringBuilder();
+        StringBuilder title2 = new StringBuilder();
         StringBuilder notesString = new StringBuilder("--|");
         Map<LineType, StringBuilder> parts = new HashMap<>();
+
+        // Set the titles :
+        title1.append("# Title : ").append(title).append(" -- Author : ").append(author);
+        title2.append("# Structure : ").append(settings.noteValue).append("/").append(settings.pitch).append(" -- Tempo : ").append((int) (settings.tempo)).append(" bpm");
 
         // Set the part name :
         for (int i = 0; i < settings.getLinesNumber(); i++) {
@@ -102,6 +109,8 @@ public class MusicPartition {
         }
 
         System.out.println(upperLowerString);
+        System.out.println(title1);
+        System.out.println(title2);
         System.out.println(notesString);
         for (int i = 0; i < settings.getLinesNumber(); i++) {
             System.out.println(parts.get(settings.lineTypes.get(i)));
