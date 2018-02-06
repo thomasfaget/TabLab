@@ -96,20 +96,13 @@ public class MusicBar {
      * @param beatNumber the beat number
      */
     public void setSpecialStructure(BeatStructure structure, int beatNumber) {
-        BeatStructure oldBeatStructure = settings.beatStructure == null ? musicBeats.get(beatNumber - 1).specialStructure : settings.beatStructure;
-        musicBeats.get(beatNumber - 1).specialStructure = structure;
+        MusicBeat musicBeat = musicBeats.get(beatNumber - 1);
+        BeatStructure oldBeatStructure = settings.beatStructure == null ? musicBeat.specialStructure : settings.beatStructure;
+        musicBeat.specialStructure = structure;
 
-        // Update the note, to match with the new structure
-        // TODO
-        /*
-        for (LineType lineType : musicBeats.get(beatNumber).beatNotes.keySet()) {
-            Notes notes = musicBeats.get(beatNumber).beatNotes.get(lineType);
-            Notes newNotes = new Notes();
-            for (int i = 0; i < structure.getNotesNumber(); i++) {
-
-            }
-        }
-        */
+        // Update the notes, to match with the new structure
+        for (LineType lineType : musicBeat.beatNotes.keySet())
+            musicBeat.beatNotes.put(lineType, changeNotesStructure(musicBeat.beatNotes.get(lineType), oldBeatStructure, structure));
     }
 
     /**
@@ -153,6 +146,93 @@ public class MusicBar {
         }
         return newMusicBar;
     }
+
+    /**
+     * Copy a beat to a specific position
+     * Copy all the lines
+     * @param beatNumberToCopy The beat position to copy
+     * @param beatNumberToPaste The beat position to paste
+     */
+    public void copyBeat(int beatNumberToCopy, int beatNumberToPaste) {
+        MusicBeat musicBeat1 = musicBeats.get(beatNumberToCopy - 1);
+        MusicBeat musicBeat2 = musicBeats.get(beatNumberToPaste - 1);
+
+        for (LineType lineType : musicBeat1.beatNotes.keySet()) {
+            if (musicBeat2.beatNotes.containsKey(lineType)) {
+                musicBeat2.beatNotes.put(lineType, changeNotesStructure(musicBeat1.beatNotes.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+            }
+        }
+    }
+
+    /**
+     * Copy a beat to a specific position and a specific line
+     * @param lineType the line to copy
+     * @param beatNumberToCopy The beat position to copy
+     * @param beatNumberToPaste The beat position to paste
+     */
+    public void copyBeat(LineType lineType, int beatNumberToCopy, int beatNumberToPaste) {
+        MusicBeat musicBeat1 = musicBeats.get(beatNumberToCopy - 1);
+        MusicBeat musicBeat2 = musicBeats.get(beatNumberToPaste - 1);
+
+        if (musicBeat2.beatNotes.containsKey(lineType)) {
+            musicBeat2.beatNotes.put(lineType, changeNotesStructure(musicBeat1.beatNotes.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+        }
+    }
+
+    /**
+     * Change the notes to match with the new structure
+     * @param oldNotes the notes to update
+     * @param oldStructure the old structure
+     * @param newStructure the new structure
+     * @return the new notes
+     */
+    private Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
+        int nbTimes = newStructure.getStructure().size();
+        int oldTimeInd = 0;
+        int nbSkipInd = 0;
+
+        Notes newNotes = new Notes();
+
+        for (int timeInd = 0; timeInd < nbTimes; timeInd++) {
+
+            BeatStructure.NoteTime newTime = newStructure.getStructure().get(timeInd);
+            BeatStructure.NoteTime oldTime = oldStructure.getStructure().get(oldTimeInd);
+            double delta = oldTime.getTime();
+
+            // Copy the note at the current emplacement (if present)
+            if (nbSkipInd == 0 && oldNotes.isNote(oldTimeInd+1)) {
+                newNotes.addNote(timeInd+1);
+            }
+
+            // Find the next note in the old structure (update the index)
+            for (int skipInd = 1; skipInd <= nbSkipInd; skipInd++) {
+                if (oldTimeInd + skipInd < oldStructure.getNotesNumber())
+                    delta += oldStructure.getStructure().get(oldTimeInd + skipInd).getTime();
+            }
+            delta /= newTime.getTime();
+
+            if (delta == Math.floor(delta)) {
+                oldTimeInd += (delta);
+                nbSkipInd = 0;
+            }
+            else {
+                nbSkipInd++;
+            }
+
+        }
+        return newNotes;
+
+    }
+
+    // 1---
+    // <normal>
+
+    //
+    // 1-&-2&
+    // <4,4,2>
+
+    // 1&2&
+    // <2,2>
 
 
     // All the notes (all the lines) on the duration of a beat
