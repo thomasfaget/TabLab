@@ -77,7 +77,7 @@ public class MusicPartition {
         StringBuilder title1 = new StringBuilder();
         StringBuilder title2 = new StringBuilder();
         StringBuilder notesString = new StringBuilder("--|");
-        Map<LineType, StringBuilder> parts = new HashMap<>();
+        Map<String, StringBuilder> parts = new HashMap<>();
 
         // Set the titles :
         title1.append("# Title : ").append(title).append(" -- Author : ").append(author);
@@ -85,7 +85,7 @@ public class MusicPartition {
 
         // Set the part name :
         for (int i = 0; i < settings.getLinesNumber(); i++) {
-            parts.put(settings.lineTypes.get(i), new StringBuilder(settings.lineTypes.get(i).toString().substring(0, 2) + '|'));
+            parts.put(settings.lineStructure.get(i), new StringBuilder(settings.lineStructure.get(i).substring(0, 2) + '|'));
         }
 
         // Fill the tab
@@ -95,7 +95,7 @@ public class MusicPartition {
 
                     notesString.append(note == 1 ? beat : "-");
                     upperLowerString.append("-");
-                    for (LineType lineType : parts.keySet()) {
+                    for (String lineType : parts.keySet()) {
                         String s = musicBar.isNote(lineType, beat, note) ? "x" : "-";
                         parts.get(lineType).append(s);
                     }
@@ -113,7 +113,7 @@ public class MusicPartition {
         System.out.println(title2);
         System.out.println(notesString);
         for (int i = 0; i < settings.getLinesNumber(); i++) {
-            System.out.println(parts.get(settings.lineTypes.get(i)));
+            System.out.println(parts.get(settings.lineStructure.get(i)));
         }
         System.out.println(upperLowerString);
 

@@ -24,7 +24,7 @@ public class MusicBar {
     public void createEmptyBar() {
         for (int i = 0; i < settings.pitch; i++) {
             MusicBeat musicBeat = new MusicBeat();
-            for (LineType lineType : settings.lineTypes) {
+            for (String lineType : settings.lineStructure) {
                 musicBeat.beatNotes.put(lineType, new Notes());
             }
             musicBeats.add(musicBeat);
@@ -35,7 +35,7 @@ public class MusicBar {
      * Add a empty line in the music bar
      * @param lineType the type of the line
      */
-    public void addEmptyLine(LineType lineType) {
+    public void addEmptyLine(String lineType) {
         for (MusicBeat musicBeat : musicBeats) {
             musicBeat.beatNotes.put(lineType, new Notes());
         }
@@ -47,7 +47,7 @@ public class MusicBar {
      * @param beatNumber the beat number
      * @param lineType the line
      */
-    public void addNote(LineType lineType, int beatNumber, int noteNumber) {
+    public void addNote(String lineType, int beatNumber, int noteNumber) {
         Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
         if (notes != null) {
             notes.addNote(noteNumber);
@@ -60,7 +60,7 @@ public class MusicBar {
      * @param beatNumber the beat number
      * @param lineType the line
      */
-    public void removeNote(LineType lineType, int beatNumber, int noteNumber) {
+    public void removeNote(String lineType, int beatNumber, int noteNumber) {
         Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
         if (notes != null) {
             notes.removeNote(noteNumber);
@@ -74,7 +74,7 @@ public class MusicBar {
      * @param lineType the line
      * @return If there is a note at the given position
      */
-    public boolean isNote(LineType lineType, int beatNumber, int noteNumber) {
+    public boolean isNote(String lineType, int beatNumber, int noteNumber) {
         Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
         return notes != null && notes.isNote(noteNumber);
     }
@@ -101,7 +101,7 @@ public class MusicBar {
         musicBeat.specialStructure = structure;
 
         // Update the notes, to match with the new structure
-        for (LineType lineType : musicBeat.beatNotes.keySet())
+        for (String lineType : musicBeat.beatNotes.keySet())
             musicBeat.beatNotes.put(lineType, changeNotesStructure(musicBeat.beatNotes.get(lineType), oldBeatStructure, structure));
     }
 
@@ -137,7 +137,7 @@ public class MusicBar {
             MusicBeat newMusicBeat = new MusicBeat();
             newMusicBeat.specialStructure = musicBeat.specialStructure;
 
-            for (LineType lineType : musicBeat.beatNotes.keySet()) {
+            for (String lineType : musicBeat.beatNotes.keySet()) {
                 Notes notes = musicBeat.beatNotes.get(lineType).copyNotes();
                 newMusicBeat.beatNotes.put(lineType, notes);
             }
@@ -157,7 +157,7 @@ public class MusicBar {
         MusicBeat musicBeat1 = musicBeats.get(beatNumberToCopy - 1);
         MusicBeat musicBeat2 = musicBeats.get(beatNumberToPaste - 1);
 
-        for (LineType lineType : musicBeat1.beatNotes.keySet()) {
+        for (String lineType : musicBeat1.beatNotes.keySet()) {
             if (musicBeat2.beatNotes.containsKey(lineType)) {
                 musicBeat2.beatNotes.put(lineType, changeNotesStructure(musicBeat1.beatNotes.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
             }
@@ -170,7 +170,7 @@ public class MusicBar {
      * @param beatNumberToCopy The beat position to copy
      * @param beatNumberToPaste The beat position to paste
      */
-    public void copyBeat(LineType lineType, int beatNumberToCopy, int beatNumberToPaste) {
+    public void copyBeat(String lineType, int beatNumberToCopy, int beatNumberToPaste) {
         MusicBeat musicBeat1 = musicBeats.get(beatNumberToCopy - 1);
         MusicBeat musicBeat2 = musicBeats.get(beatNumberToPaste - 1);
 
@@ -200,8 +200,8 @@ public class MusicBar {
             double delta = oldTime.getTime();
 
             // Copy the note at the current emplacement (if present)
-            if (nbSkipInd == 0 && oldNotes.isNote(oldTimeInd+1)) {
-                newNotes.addNote(timeInd+1);
+            if (nbSkipInd == 0 && oldNotes.isNote(oldTimeInd + 1)) {
+                newNotes.addNote(timeInd + 1);
             }
 
             // Find the next note in the old structure (update the index)
@@ -214,8 +214,7 @@ public class MusicBar {
             if (delta == Math.floor(delta)) {
                 oldTimeInd += (delta);
                 nbSkipInd = 0;
-            }
-            else {
+            } else {
                 nbSkipInd++;
             }
 
@@ -224,22 +223,11 @@ public class MusicBar {
 
     }
 
-    // 1---
-    // <normal>
-
-    //
-    // 1-&-2&
-    // <4,4,2>
-
-    // 1&2&
-    // <2,2>
-
-
     // All the notes (all the lines) on the duration of a beat
     private class MusicBeat {
 
         BeatStructure specialStructure = null;
-        Map<LineType, Notes> beatNotes = new HashMap<>();
+        Map<String, Notes> beatNotes = new HashMap<>();
 
         boolean hasSpecialStructure() {
             return specialStructure != null;

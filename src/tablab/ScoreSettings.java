@@ -1,7 +1,5 @@
 package tablab;
 
-import java.util.List;
-
 /** The settings of the score
  */
 public class ScoreSettings {
@@ -10,10 +8,10 @@ public class ScoreSettings {
     public int noteValue;
     public float tempo;
     public BeatStructure beatStructure;
-    public List<LineType> lineTypes;
+    public LineStructure lineStructure;
 
 
     public int getLinesNumber() {
-        return lineTypes.size();
+        return lineStructure.size();
     }
 }
