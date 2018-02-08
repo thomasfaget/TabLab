@@ -97,12 +97,13 @@ public class MusicBar {
      */
     public void setSpecialStructure(BeatStructure structure, int beatNumber) {
         MusicBeat musicBeat = musicBeats.get(beatNumber - 1);
-        BeatStructure oldBeatStructure = settings.beatStructure == null ? musicBeat.specialStructure : settings.beatStructure;
+        BeatStructure oldBeatStructure = musicBeat.hasSpecialStructure() ? musicBeat.specialStructure : settings.beatStructure;
         musicBeat.specialStructure = structure;
 
         // Update the notes, to match with the new structure
-        for (String lineType : musicBeat.beatNotes.keySet())
+        for (String lineType : musicBeat.beatNotes.keySet()) {
             musicBeat.beatNotes.put(lineType, changeNotesStructure(musicBeat.beatNotes.get(lineType), oldBeatStructure, structure));
+        }
     }
 
     /**
