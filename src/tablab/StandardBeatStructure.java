@@ -8,8 +8,8 @@ import static tablab.BeatStructure.NoteTime.*;
 // Some standard beat structures
 public class StandardBeatStructure {
 
-    public static BeatStructure SIMPLE_NOTE_STRUCTURE = new BeatStructure(Collections.singletonList(
-            SIMPLE_NOTE));
+    public static BeatStructure QUATER_NOTE_STRUCTURE = new BeatStructure(Collections.singletonList(
+            QUARTER_NOTE));
     public static BeatStructure EIGHTH_NOTE_STRUCTURE = new BeatStructure(Arrays.asList(
             EIGHTH_NOTE,
             EIGHTH_NOTE));
