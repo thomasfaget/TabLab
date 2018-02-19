@@ -52,6 +52,38 @@ public class MusicPartition {
     }
 
     /**
+     * Add a music bar in the partition
+     * @param musicBar the bar to add
+     */
+    public void addMusicBar(int index, MusicBar musicBar) {
+        musicBars.add(index, musicBar);
+    }
+
+    /**
+     * Get the music bar at a precise position in the partition
+     * @param index the index of the music bar
+     * @return the music bar
+     */
+    public MusicBar getMusicBar(int index) {
+        return musicBars.get(index);
+    }
+
+    /** Get all the music bars
+     * @return the music bars
+     */
+    public List<MusicBar> getMusicBars() {
+        return musicBars;
+    }
+
+    /** Set a music bar in the partition
+     * @param index the index of the bar to set
+     * @param musicBar the music bar to set
+     */
+    public void setMusicBar(int index, MusicBar musicBar) {
+        musicBars.set(index, musicBar);
+    }
+
+    /**
      * Remove a music bar in the partition
      * @param musicBar the bar to remove
      */
@@ -91,7 +123,7 @@ public class MusicPartition {
         // Fill the tab
         for (MusicBar musicBar : musicBars) {
             for (int beat = 1; beat <= settings.pitch; beat++) {
-                for (int note = 1; note <= musicBar.getBeatStructure(beat).getNotesNumber(); note++) {
+                for (int note = 1; note <= musicBar.getBeatStructure(beat).size(); note++) {
 
                     notesString.append(note == 1 ? beat : "-");
                     upperLowerString.append("-");

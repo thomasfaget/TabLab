@@ -79,6 +79,17 @@ public class MusicBar {
         return notes != null && notes.isNote(noteNumber);
     }
 
+    /** Get the compressed notes data from at a specific emplacement in the bar
+     *
+     * @param beatNumber the beat number
+     * @param lineType the line
+     * @return the notes data
+     */
+    long getCompressedNotes(String lineType, int beatNumber) {
+        Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
+        return notes.getNotes();
+    }
+
     /**
      * Check if the music bar has an alternative structureor a specific beat number
      * @param beatNumber the beat number
@@ -150,7 +161,8 @@ public class MusicBar {
 
     /**
      * Copy a beat to a specific position
-     * Copy all the lines
+     * Copy all the lines.
+     * Do not copy the alternative structure !
      * @param beatNumberToCopy The beat position to copy
      * @param beatNumberToPaste The beat position to paste
      */
@@ -167,6 +179,7 @@ public class MusicBar {
 
     /**
      * Copy a beat to a specific position and a specific line
+     * Do not copy the alternative structure !
      * @param lineType the line to copy
      * @param beatNumberToCopy The beat position to copy
      * @param beatNumberToPaste The beat position to paste
@@ -188,7 +201,7 @@ public class MusicBar {
      * @return the new notes
      */
     private Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
-        int nbTimes = newStructure.getStructure().size();
+        int nbTimes = newStructure.size();
         int oldTimeInd = 0;
         int nbSkipInd = 0;
 
@@ -196,8 +209,8 @@ public class MusicBar {
 
         for (int timeInd = 0; timeInd < nbTimes; timeInd++) {
 
-            BeatStructure.NoteTime newTime = newStructure.getStructure().get(timeInd);
-            BeatStructure.NoteTime oldTime = oldStructure.getStructure().get(oldTimeInd);
+            BeatStructure.NoteTime newTime = newStructure.get(timeInd);
+            BeatStructure.NoteTime oldTime = oldStructure.get(oldTimeInd);
             double delta = oldTime.getTime();
 
             // Copy the note at the current emplacement (if present)
@@ -207,8 +220,8 @@ public class MusicBar {
 
             // Find the next note in the old structure (update the index)
             for (int skipInd = 1; skipInd <= nbSkipInd; skipInd++) {
-                if (oldTimeInd + skipInd < oldStructure.getNotesNumber())
-                    delta += oldStructure.getStructure().get(oldTimeInd + skipInd).getTime();
+                if (oldTimeInd + skipInd < oldStructure.size())
+                    delta += oldStructure.get(oldTimeInd + skipInd).getTime();
             }
             delta /= newTime.getTime();
 
