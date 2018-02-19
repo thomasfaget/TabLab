@@ -1,11 +1,30 @@
 package tablab;
 
-public class Notes {
+class Notes {
 
     // The notes of a beat are encoding in an integer (long)
     // Each bit of the integer indicate if there is or not a note at the position
     // The number of note (i.e. the number of bits used) is determined uphill
     private long notes = 0b0;
+
+    /** Create new empty notes
+     */
+    public Notes() {}
+
+    /** Create notes from data
+     * @param notes the notes data
+     */
+    Notes(long notes) {
+        this.notes = notes;
+    }
+
+    /** Get the brut notes data
+     *
+     * @return the notes data
+     */
+    public long getNotes() {
+        return notes;
+    }
 
     /**
      * Add a note the position given
