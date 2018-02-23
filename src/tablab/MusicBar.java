@@ -90,6 +90,16 @@ public class MusicBar {
         return notes.getNotes();
     }
 
+    /** Set compressed notes data at a specific emplacement in the bar
+     *
+     * @param beatNumber the beat number
+     * @param lineType the line
+     * @param notes the compressed notes to set
+     */
+    void setCompressedNotes(String lineType, int beatNumber, long notes) {
+        musicBeats.get(beatNumber -1).beatNotes.put(lineType, new Notes(notes));
+    }
+
     /**
      * Check if the music bar has an alternative structureor a specific beat number
      * @param beatNumber the beat number
