@@ -1,13 +1,22 @@
 package tablab;
 
 
+import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import javax.sound.sampled.Line;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class XmlManager {
 
@@ -20,7 +29,7 @@ public class XmlManager {
     private static String BARS = "bars";
     private static String SETTINGS = "settings";
     private static String PITCH = "pitch";
-    private static String PITCH_VALUE = "pitch_value";
+    private static String NOTE_VALUE = "note_value";
     private static String TEMPO = "tempo";
     private static String LINE_STRUCTURE = "line_struct";
     private static String BEAT_STRUCTURE = "beat_struct";
@@ -71,8 +80,8 @@ public class XmlManager {
     private static Element getSettings(ScoreSettings scoreSettings) {
         Element settings = new Element(SETTINGS);
 
-        settings.setAttribute(SETTINGS, String.valueOf(scoreSettings.pitch));
-        settings.setAttribute(PITCH_VALUE, String.valueOf(scoreSettings.noteValue));
+        settings.setAttribute(PITCH, String.valueOf(scoreSettings.pitch));
+        settings.setAttribute(NOTE_VALUE, String.valueOf(scoreSettings.noteValue));
         settings.setAttribute(TEMPO, String.valueOf(scoreSettings.tempo));
 
         Element bs = getBeatStructure(scoreSettings.beatStructure);
@@ -114,7 +123,7 @@ public class XmlManager {
             b.setAttribute(NUMBER, String.valueOf(beat));
 
             if (musicBar.hasSpecialStructure(beat)) {
-                b.setAttribute(LINE_STRUCTURE, getBeatStructureAsString(musicBar.getSpecialStructure(beat)));
+                b.setAttribute(BEAT_STRUCTURE, getBeatStructureAsString(musicBar.getSpecialStructure(beat)));
             }
 
             for (String lineType : scoreSettings.lineStructure) {
@@ -128,5 +137,90 @@ public class XmlManager {
         }
 
         return bar;
+    }
+
+    /** Read a music partition from a xml file
+     *
+     * @param path the path of the partition
+     * @return A music partition
+     * @throws JDOMException is thrown if problem with the given path
+     * @throws IOException is thrown if problem with the given path
+     */
+    public static MusicPartition readPartitionFromXmlFile(String path) throws JDOMException, IOException {
+        SAXBuilder sxb = new SAXBuilder();
+        Document document = sxb.build(new File(path));
+
+        Element racine = document.getRootElement();
+        return createPartition(racine);
+    }
+
+    private static MusicPartition createPartition(Element partition) {
+
+        String title = partition.getAttributeValue(TITLE);
+        String author = partition.getAttributeValue(AUTHOR);
+        ScoreSettings scoreSettings = createSettings(partition.getChild(SETTINGS));
+
+        MusicPartition musicPartition = new MusicPartition(title, author, scoreSettings);
+
+        List<Element> bars = partition.getChild(BARS).getChildren(MUSIC_BAR);
+        bars = bars.stream().sorted(Comparator.comparingInt(bar -> Integer.parseInt(bar.getAttributeValue(NUMBER)))).collect(Collectors.toList());
+        for (Element bar : bars) {
+            musicPartition.addMusicBar(createMusicBar(bar, scoreSettings));
+        }
+
+        return musicPartition;
+    }
+
+    private static ScoreSettings createSettings(Element settings) {
+        ScoreSettings scoreSettings = new ScoreSettings();
+        scoreSettings.pitch = Integer.parseInt(settings.getAttributeValue(PITCH));
+        scoreSettings.noteValue = Integer.parseInt(settings.getAttributeValue(NOTE_VALUE));
+        scoreSettings.tempo = Float.parseFloat(settings.getAttributeValue(TEMPO));
+
+        scoreSettings.lineStructure = createLineStructure(settings.getChild(LINE_STRUCTURE));
+        scoreSettings.beatStructure = createBeatStructure(settings.getChild(BEAT_STRUCTURE));
+
+        return scoreSettings;
+    }
+
+    private static LineStructure createLineStructure(Element structure) {
+        String line = structure.getContent(0).getValue();
+        LineStructure lineStructure = new LineStructure();
+        lineStructure.addAll(Arrays.asList(line.split(SEP)));
+        return lineStructure;
+    }
+
+    private static BeatStructure createBeatStructure(Element structure) {
+        String beat = structure.getContent(0).getValue();
+        return createBeatStructureFromString(beat);
+    }
+
+    private static BeatStructure createBeatStructureFromString(String structure) {
+        BeatStructure beatStructure = new BeatStructure();
+        for (String s : structure.split(SEP)) {
+            beatStructure.add(BeatStructure.NoteTime.valueOf(s));
+        }
+        return beatStructure;
+    }
+
+    private static MusicBar createMusicBar(Element bar, ScoreSettings scoreSettings) {
+        MusicBar musicBar = new MusicBar(scoreSettings);
+        musicBar.createEmptyBar();
+
+        List<Element> beats = bar.getChildren(BEAT);
+        beats = beats.stream().sorted(Comparator.comparingInt(beat -> Integer.parseInt(beat.getAttributeValue(NUMBER)))).collect(Collectors.toList());
+        for (int i = 0; i < beats.size(); i++) {
+            Element beat = beats.get(i);
+            Attribute att = beat.getAttribute(BEAT_STRUCTURE);
+            if (att != null) {
+                musicBar.setSpecialStructure(createBeatStructureFromString(att.getValue()), i+1);
+            }
+            for (Element line : beat.getChildren(LINE)) {
+                long notes = Long.parseLong(line.getContent(0).getValue());
+                musicBar.setCompressedNotes(line.getAttributeValue(PART), i+1, notes);
+            }
+        }
+
+        return musicBar;
     }
 }
