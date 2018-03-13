@@ -48,7 +48,7 @@ public class MusicBar {
      * @param lineType the line
      */
     public void addNote(String lineType, int beatNumber, int noteNumber) {
-        Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
+        Notes notes = getNotesAt(lineType, beatNumber);
         if (notes != null) {
             notes.addNote(noteNumber);
         }
@@ -61,7 +61,7 @@ public class MusicBar {
      * @param lineType the line
      */
     public void removeNote(String lineType, int beatNumber, int noteNumber) {
-        Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
+        Notes notes = getNotesAt(lineType, beatNumber);
         if (notes != null) {
             notes.removeNote(noteNumber);
         }
@@ -75,7 +75,7 @@ public class MusicBar {
      * @return If there is a note at the given position
      */
     public boolean isNote(String lineType, int beatNumber, int noteNumber) {
-        Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
+        Notes notes = getNotesAt(lineType, beatNumber);
         return notes != null && notes.isNote(noteNumber);
     }
 
@@ -86,8 +86,8 @@ public class MusicBar {
      * @return the notes data
      */
     long getCompressedNotes(String lineType, int beatNumber) {
-        Notes notes = musicBeats.get(beatNumber - 1).beatNotes.get(lineType);
-        return notes.getNotes();
+        Notes notes = getNotesAt(lineType, beatNumber);
+        return notes == null ? 0 : notes.getNotes();
     }
 
     /** Set compressed notes data at a specific emplacement in the bar
@@ -97,7 +97,9 @@ public class MusicBar {
      * @param notes the compressed notes to set
      */
     void setCompressedNotes(String lineType, int beatNumber, long notes) {
-        musicBeats.get(beatNumber -1).beatNotes.put(lineType, new Notes(notes));
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        if (musicBeat != null)
+            musicBeat.beatNotes.put(lineType, new Notes(notes));
     }
 
     /**
@@ -106,8 +108,8 @@ public class MusicBar {
      * @return true if alternative structure
      */
     public boolean hasSpecialStructure(int beatNumber) {
-        return musicBeats.get(beatNumber - 1).hasSpecialStructure();
-
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        return musicBeat != null && musicBeat.hasSpecialStructure();
     }
 
     /**
@@ -117,13 +119,15 @@ public class MusicBar {
      * @param beatNumber the beat number
      */
     public void setSpecialStructure(BeatStructure structure, int beatNumber) {
-        MusicBeat musicBeat = musicBeats.get(beatNumber - 1);
-        BeatStructure oldBeatStructure = musicBeat.hasSpecialStructure() ? musicBeat.specialStructure : settings.beatStructure;
-        musicBeat.specialStructure = structure;
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        if (musicBeat != null) {
+            BeatStructure oldBeatStructure = musicBeat.hasSpecialStructure() ? musicBeat.specialStructure : settings.beatStructure;
+            musicBeat.specialStructure = structure;
 
-        // Update the notes, to match with the new structure
-        for (String lineType : musicBeat.beatNotes.keySet()) {
-            musicBeat.beatNotes.put(lineType, changeNotesStructure(musicBeat.beatNotes.get(lineType), oldBeatStructure, structure));
+            // Update the notes, to match with the new structure
+            for (String lineType : musicBeat.beatNotes.keySet()) {
+                musicBeat.beatNotes.put(lineType, changeNotesStructure(musicBeat.beatNotes.get(lineType), oldBeatStructure, structure));
+            }
         }
     }
 
@@ -133,7 +137,8 @@ public class MusicBar {
      * @return the alternative structure
      */
     public BeatStructure getSpecialStructure(int beatNumber) {
-        return musicBeats.get(beatNumber - 1).specialStructure;
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        return musicBeat == null ? null : musicBeat.specialStructure;
     }
 
     /**
@@ -195,12 +200,35 @@ public class MusicBar {
      * @param beatNumberToPaste The beat position to paste
      */
     public void copyBeat(String lineType, int beatNumberToCopy, int beatNumberToPaste) {
-        MusicBeat musicBeat1 = musicBeats.get(beatNumberToCopy - 1);
-        MusicBeat musicBeat2 = musicBeats.get(beatNumberToPaste - 1);
+        MusicBeat musicBeat1 = getBeatAt(beatNumberToCopy);
+        MusicBeat musicBeat2 = getBeatAt(beatNumberToPaste);
 
-        if (musicBeat2.beatNotes.containsKey(lineType)) {
+        if (musicBeat1 != null && musicBeat2 != null && musicBeat2.beatNotes.containsKey(lineType)) {
             musicBeat2.beatNotes.put(lineType, changeNotesStructure(musicBeat1.beatNotes.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
         }
+    }
+
+    /**
+     * Get the music beat at a precise beat position
+     * @param beatNumber the beat position
+     * @return the MusicBeat, null if beatNumber greater than the number of notes
+     */
+    private MusicBeat getBeatAt(int beatNumber) {
+        return beatNumber > settings.notesNumber ? null : musicBeats.get(beatNumber -1);
+    }
+
+    /**
+     * Get the notes at a precise beat position and line
+     * @param lineType the line
+     * @param beatNumber the beat position
+     * @return the Notes, null if unknown lineType or if beatNumber greater than the number of notes
+     */
+    private Notes getNotesAt(String lineType, int beatNumber) {
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        if (musicBeat == null) {
+            return null;
+        }
+        return musicBeat.beatNotes.get(lineType);
     }
 
     /**
@@ -210,7 +238,7 @@ public class MusicBar {
      * @param newStructure the new structure
      * @return the new notes
      */
-    private Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
+    private static Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
         int nbTimes = newStructure.size();
         int oldTimeInd = 0;
         int nbSkipInd = 0;
