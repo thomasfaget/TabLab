@@ -22,7 +22,7 @@ public class MusicBar {
     /** Create a empty MusicBar, with the data in the setting object
      */
     public void createEmptyBar() {
-        for (int i = 0; i < settings.pitch; i++) {
+        for (int i = 0; i < settings.notesNumber; i++) {
             MusicBeat musicBeat = new MusicBeat();
             for (String lineType : settings.lineStructure) {
                 musicBeat.beatNotes.put(lineType, new Notes());

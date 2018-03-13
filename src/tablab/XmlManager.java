@@ -9,7 +9,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import javax.sound.sampled.Line;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,8 +27,8 @@ public class XmlManager {
     private static String AUTHOR = "author";
     private static String BARS = "bars";
     private static String SETTINGS = "settings";
-    private static String PITCH = "pitch";
-    private static String NOTE_VALUE = "note_value";
+    private static String NOTES_NUMBER = "notesNumber";
+    private static String NOTES_VALUE = "notes_value";
     private static String TEMPO = "tempo";
     private static String LINE_STRUCTURE = "line_struct";
     private static String BEAT_STRUCTURE = "beat_struct";
@@ -80,8 +79,8 @@ public class XmlManager {
     private static Element getSettings(ScoreSettings scoreSettings) {
         Element settings = new Element(SETTINGS);
 
-        settings.setAttribute(PITCH, String.valueOf(scoreSettings.pitch));
-        settings.setAttribute(NOTE_VALUE, String.valueOf(scoreSettings.noteValue));
+        settings.setAttribute(NOTES_NUMBER, String.valueOf(scoreSettings.notesNumber));
+        settings.setAttribute(NOTES_VALUE, String.valueOf(scoreSettings.notesValue));
         settings.setAttribute(TEMPO, String.valueOf(scoreSettings.tempo));
 
         Element bs = getBeatStructure(scoreSettings.beatStructure);
@@ -118,7 +117,7 @@ public class XmlManager {
     private static Element getMusicBar(MusicBar musicBar, ScoreSettings scoreSettings) {
         Element bar = new Element(MUSIC_BAR);
 
-        for (int beat = 1; beat <= scoreSettings.pitch; beat++) {
+        for (int beat = 1; beat <= scoreSettings.notesNumber; beat++) {
             Element b = new Element(BEAT);
             b.setAttribute(NUMBER, String.valueOf(beat));
 
@@ -173,8 +172,8 @@ public class XmlManager {
 
     private static ScoreSettings createSettings(Element settings) {
         ScoreSettings scoreSettings = new ScoreSettings();
-        scoreSettings.pitch = Integer.parseInt(settings.getAttributeValue(PITCH));
-        scoreSettings.noteValue = Integer.parseInt(settings.getAttributeValue(NOTE_VALUE));
+        scoreSettings.notesNumber = Integer.parseInt(settings.getAttributeValue(NOTES_NUMBER));
+        scoreSettings.notesValue = Integer.parseInt(settings.getAttributeValue(NOTES_VALUE));
         scoreSettings.tempo = Float.parseFloat(settings.getAttributeValue(TEMPO));
 
         scoreSettings.lineStructure = createLineStructure(settings.getChild(LINE_STRUCTURE));

@@ -4,8 +4,8 @@ package tablab;
  */
 public class ScoreSettings {
 
-    public int pitch;
-    public int noteValue;
+    public int notesNumber;
+    public int notesValue;
     public float tempo;
     public BeatStructure beatStructure;
     public LineStructure lineStructure;
