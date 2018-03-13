@@ -113,7 +113,7 @@ public class MusicPartition {
 
         // Set the titles :
         title1.append("# Title : ").append(title).append(" -- Author : ").append(author);
-        title2.append("# Structure : ").append(settings.notesValue).append("/").append(settings.notesNumber).append(" -- Tempo : ").append((int) (settings.tempo)).append(" bpm");
+        title2.append("# Structure : ").append(settings.notesNumber).append("/").append(settings.notesValue).append(" -- Tempo : ").append((int) (settings.tempo)).append(" bpm");
 
         // Set the part name :
         for (int i = 0; i < settings.getLinesNumber(); i++) {
