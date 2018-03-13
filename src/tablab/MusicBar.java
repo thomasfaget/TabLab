@@ -181,12 +181,14 @@ public class MusicBar {
      * @param beatNumberToPaste The beat position to paste
      */
     public void copyBeat(int beatNumberToCopy, int beatNumberToPaste) {
-        MusicBeat musicBeat1 = musicBeats.get(beatNumberToCopy - 1);
-        MusicBeat musicBeat2 = musicBeats.get(beatNumberToPaste - 1);
+        MusicBeat musicBeat1 = getBeatAt(beatNumberToCopy);
+        MusicBeat musicBeat2 = getBeatAt(beatNumberToPaste);
 
-        for (String lineType : musicBeat1.keySet()) {
-            if (musicBeat2.containsKey(lineType)) {
-                musicBeat2.put(lineType, changeNotesStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+        if (musicBeat1 != null && musicBeat2 != null) {
+            for (String lineType : musicBeat1.keySet()) {
+                if (musicBeat2.containsKey(lineType)) {
+                    musicBeat2.put(lineType, changeNotesStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+                }
             }
         }
     }
