@@ -3,7 +3,6 @@ package tablab;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * MusicBar represent a bar of partition.
@@ -25,7 +24,7 @@ public class MusicBar {
         for (int i = 0; i < settings.notesNumber; i++) {
             MusicBeat musicBeat = new MusicBeat();
             for (String lineType : settings.lineStructure) {
-                musicBeat.beatNotes.put(lineType, new Notes());
+                musicBeat.put(lineType, new Notes());
             }
             musicBeats.add(musicBeat);
         }
@@ -37,7 +36,7 @@ public class MusicBar {
      */
     public void addEmptyLine(String lineType) {
         for (MusicBeat musicBeat : musicBeats) {
-            musicBeat.beatNotes.put(lineType, new Notes());
+            musicBeat.put(lineType, new Notes());
         }
     }
 
@@ -99,7 +98,7 @@ public class MusicBar {
     void setCompressedNotes(String lineType, int beatNumber, long notes) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
         if (musicBeat != null)
-            musicBeat.beatNotes.put(lineType, new Notes(notes));
+            musicBeat.put(lineType, new Notes(notes));
     }
 
     /**
@@ -125,8 +124,8 @@ public class MusicBar {
             musicBeat.specialStructure = structure;
 
             // Update the notes, to match with the new structure
-            for (String lineType : musicBeat.beatNotes.keySet()) {
-                musicBeat.beatNotes.put(lineType, changeNotesStructure(musicBeat.beatNotes.get(lineType), oldBeatStructure, structure));
+            for (String lineType : musicBeat.keySet()) {
+                musicBeat.put(lineType, changeNotesStructure(musicBeat.get(lineType), oldBeatStructure, structure));
             }
         }
     }
@@ -164,9 +163,9 @@ public class MusicBar {
             MusicBeat newMusicBeat = new MusicBeat();
             newMusicBeat.specialStructure = musicBeat.specialStructure;
 
-            for (String lineType : musicBeat.beatNotes.keySet()) {
-                Notes notes = musicBeat.beatNotes.get(lineType).copyNotes();
-                newMusicBeat.beatNotes.put(lineType, notes);
+            for (String lineType : musicBeat.keySet()) {
+                Notes notes = musicBeat.get(lineType).copyNotes();
+                newMusicBeat.put(lineType, notes);
             }
 
             newMusicBar.musicBeats.add(newMusicBeat);
@@ -185,9 +184,9 @@ public class MusicBar {
         MusicBeat musicBeat1 = musicBeats.get(beatNumberToCopy - 1);
         MusicBeat musicBeat2 = musicBeats.get(beatNumberToPaste - 1);
 
-        for (String lineType : musicBeat1.beatNotes.keySet()) {
-            if (musicBeat2.beatNotes.containsKey(lineType)) {
-                musicBeat2.beatNotes.put(lineType, changeNotesStructure(musicBeat1.beatNotes.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+        for (String lineType : musicBeat1.keySet()) {
+            if (musicBeat2.containsKey(lineType)) {
+                musicBeat2.put(lineType, changeNotesStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
             }
         }
     }
@@ -203,8 +202,8 @@ public class MusicBar {
         MusicBeat musicBeat1 = getBeatAt(beatNumberToCopy);
         MusicBeat musicBeat2 = getBeatAt(beatNumberToPaste);
 
-        if (musicBeat1 != null && musicBeat2 != null && musicBeat2.beatNotes.containsKey(lineType)) {
-            musicBeat2.beatNotes.put(lineType, changeNotesStructure(musicBeat1.beatNotes.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+        if (musicBeat1 != null && musicBeat2 != null && musicBeat2.containsKey(lineType)) {
+            musicBeat2.put(lineType, changeNotesStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
         }
     }
 
@@ -228,7 +227,7 @@ public class MusicBar {
         if (musicBeat == null) {
             return null;
         }
-        return musicBeat.beatNotes.get(lineType);
+        return musicBeat.get(lineType);
     }
 
     /**
@@ -276,10 +275,9 @@ public class MusicBar {
     }
 
     // All the notes (all the lines) on the duration of a beat
-    private class MusicBeat {
+    private class MusicBeat extends HashMap<String, Notes> {
 
         BeatStructure specialStructure = null;
-        Map<String, Notes> beatNotes = new HashMap<>();
 
         boolean hasSpecialStructure() {
             return specialStructure != null;
