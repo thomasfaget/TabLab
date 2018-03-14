@@ -9,7 +9,7 @@ class Notes {
 
     /** Create new empty notes
      */
-    public Notes() {}
+    Notes() {}
 
     /** Create notes from data
      * @param notes the notes data
