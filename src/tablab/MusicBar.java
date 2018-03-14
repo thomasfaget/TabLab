@@ -115,6 +115,7 @@ public class MusicBar {
      * Add a alternative structure in bar for a specific beat number
      * Override the previous structure if there is already a alternative structure
      * Use 'null' as parameter to remove the special structure
+     * @param structure the alternative structure to use on the beat, set null the remove the current alternative structure
      * @param beatNumber the beat number
      */
     public void setSpecialStructure(BeatStructure structure, int beatNumber) {
@@ -124,8 +125,15 @@ public class MusicBar {
             musicBeat.specialStructure = structure;
 
             // Update the notes, to match with the new structure
-            for (String lineType : musicBeat.keySet()) {
-                musicBeat.put(lineType, changeNotesStructure(musicBeat.get(lineType), oldBeatStructure, structure));
+            if (structure != null && structure != oldBeatStructure) {
+                for (String lineType : musicBeat.keySet()) {
+                    musicBeat.put(lineType, changeNotesStructure(musicBeat.get(lineType), oldBeatStructure, structure));
+                }
+            }
+            else if (structure == null) {
+                for (String lineType : musicBeat.keySet()) {
+                    musicBeat.put(lineType, changeNotesStructure(musicBeat.get(lineType), oldBeatStructure, settings.beatStructure));
+                }
             }
         }
     }
