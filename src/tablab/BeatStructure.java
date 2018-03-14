@@ -43,6 +43,24 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
     }
 
     /**
+     * Get the evolution of the structure from 0 to 1
+     * There is one fraction for each NoteTime
+     * Each fraction in the result represent the relative time of the associated NoteTime
+     * @return a list of fraction from 0 to 1
+     */
+    List<Fraction> getFractionEvolution() {
+        List<Fraction> fractions = new ArrayList<>();
+        fractions.add(new Fraction(0,1));
+
+        for (int i = 0; i < size()-1; i++ ) {
+            Fraction fraction = new Fraction(1, get(i).getTime());
+            fraction.add(fractions.get(fractions.size()-1));
+            fractions.add(fraction);
+        }
+        return fractions;
+    }
+
+    /**
      * Check the structure integrity, i.e. if the total duration of the notes is equal to 1 (the duration of a beat)
      * @return true if the structure is correct
      */
