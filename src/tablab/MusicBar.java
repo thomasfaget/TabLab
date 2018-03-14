@@ -240,40 +240,32 @@ public class MusicBar {
      * @return the new notes
      */
     private static Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
-        int nbTimes = newStructure.size();
-        int oldTimeInd = 0;
-        int nbSkipInd = 0;
 
+        List<Fraction> oldEvolution = oldStructure.getFractionEvolution();
+        List<Fraction> newEvolution = newStructure.getFractionEvolution();
         Notes newNotes = new Notes();
 
-        for (int timeInd = 0; timeInd < nbTimes; timeInd++) {
+        int oldIndex = 0;
+        int newIndex = 0;
 
-            BeatStructure.NoteTime newTime = newStructure.get(timeInd);
-            BeatStructure.NoteTime oldTime = oldStructure.get(oldTimeInd);
-            double delta = oldTime.getTime();
-
-            // Copy the note at the current emplacement (if present)
-            if (nbSkipInd == 0 && oldNotes.isNote(oldTimeInd + 1)) {
-                newNotes.addNote(timeInd + 1);
+        while (oldIndex < oldEvolution.size() && newIndex < newEvolution.size()) {
+            if (oldEvolution.get(oldIndex).equal(newEvolution.get(newIndex))) {
+                if (oldNotes.isNote(oldIndex + 1)) {
+                    newNotes.addNote(newIndex +1);
+                }
+                oldIndex ++;
+                newIndex ++;
             }
+            else if (oldEvolution.get(oldIndex).doubleValue() > newEvolution.get(newIndex).doubleValue()) {
+                newIndex ++;
 
-            // Find the next note in the old structure (update the index)
-            for (int skipInd = 1; skipInd <= nbSkipInd; skipInd++) {
-                if (oldTimeInd + skipInd < oldStructure.size())
-                    delta += oldStructure.get(oldTimeInd + skipInd).getTime();
             }
-            delta /= newTime.getTime();
-
-            if (delta == Math.floor(delta)) {
-                oldTimeInd += (delta);
-                nbSkipInd = 0;
-            } else {
-                nbSkipInd++;
+            else {
+                oldIndex ++;
             }
-
         }
-        return newNotes;
 
+        return newNotes;
     }
 
     // All the notes (all the lines) on the duration of a beat
