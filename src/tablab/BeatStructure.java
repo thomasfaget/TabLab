@@ -10,12 +10,14 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
 
     // The time of a note
     public enum NoteTime {
-        QUARTER_NOTE(1),
-        EIGHTH_NOTE(2),
-        SIXTEENTH_NOTE(4),
-        THIRTY_SECOND_NOTE(8),
-        TRIPLET_NOTE(3),
-        QUAVER_TRIPLET_NOTE(6);
+        WHOLE_NOTE(1),
+        HALF_NOTE(2),
+        QUARTER_NOTE(4),
+        EIGHTH_NOTE(8),
+        SIXTEENTH_NOTE(16),
+        THIRTY_SECOND_NOTE(32),
+        TRIPLET_NOTE(12),
+        QUAVER_TRIPLET_NOTE(24);
         
         private int time;
 
@@ -48,12 +50,12 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
      * Each fraction in the result represent the relative time of the associated NoteTime
      * @return a list of fraction from 0 to 1
      */
-    List<Fraction> getFractionEvolution() {
+    List<Fraction> getFractionEvolution(ScoreSettings settings) {
         List<Fraction> fractions = new ArrayList<>();
         fractions.add(new Fraction(0,1));
 
         for (int i = 0; i < size()-1; i++ ) {
-            Fraction fraction = new Fraction(1, get(i).getTime());
+            Fraction fraction = new Fraction(settings.notesValue, get(i).getTime());
             fraction.add(fractions.get(fractions.size()-1));
             fractions.add(fraction);
         }
@@ -64,11 +66,11 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
      * Check the structure integrity, i.e. if the total duration of the notes is equal to 1 (the duration of a beat)
      * @return true if the structure is correct
      */
-    public boolean checkStructureIntegrity() {
+    public boolean checkStructureIntegrity(ScoreSettings settings) {
         float eps = 0.01f;
         float sum = 0;
         for (NoteTime noteTime : this) {
-            sum +=  1/(float) noteTime.getTime();
+            sum +=  (float) settings.notesValue / (float) noteTime.getTime();
         }
         return Math.abs(sum - 1.0f) <= eps;
     }
