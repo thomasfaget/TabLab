@@ -9,15 +9,13 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class XmlManager {
+public class FileManager {
 
     private static String SEP = "//";
 
@@ -45,7 +43,7 @@ public class XmlManager {
      * @param musicPartition the music partition to write
      * @throws IOException is thrown if problem with the given path
      */
-    public static void writePartitionToXmlFile(String path, MusicPartition musicPartition) throws IOException {
+    public static void exportToXml(String path, MusicPartition musicPartition) throws IOException {
 
         Element racine = getPartition(musicPartition);
         Document document = new Document(racine);
@@ -145,7 +143,7 @@ public class XmlManager {
      * @throws JDOMException is thrown if problem with the given path
      * @throws IOException is thrown if problem with the given path
      */
-    public static MusicPartition readPartitionFromXmlFile(String path) throws JDOMException, IOException {
+    public static MusicPartition importFromXml(String path) throws JDOMException, IOException {
         SAXBuilder sxb = new SAXBuilder();
         Document document = sxb.build(new File(path));
 
@@ -221,5 +219,12 @@ public class XmlManager {
         }
 
         return musicBar;
+    }
+
+    public static void exportToTxt(String path, MusicPartition musicPartition) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(path);
+        writer.print(musicPartition.toString());
+        writer.close();
+
     }
 }
