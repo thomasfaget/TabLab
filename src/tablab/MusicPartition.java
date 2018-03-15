@@ -100,11 +100,8 @@ public class MusicPartition {
     }
 
 
-    /**
-     * Print the partition
-     * Use this method for debugging
-     */
-    public void printPartition() {
+    @Override
+    public String toString() {
         StringBuilder upperLowerString = new StringBuilder("---");
         StringBuilder title1 = new StringBuilder();
         StringBuilder title2 = new StringBuilder();
@@ -139,14 +136,16 @@ public class MusicPartition {
             }
         }
 
-        System.out.println(upperLowerString);
-        System.out.println(title1);
-        System.out.println(title2);
-        System.out.println(notesString);
+        StringBuilder string = new StringBuilder(upperLowerString).append('\n');
+        string.append(title1).append('\n');
+        string.append(title2).append('\n');
+        string.append(notesString).append('\n');
         for (int i = 0; i < settings.getLinesNumber(); i++) {
-            System.out.println(parts.get(settings.lineStructure.get(i)));
+            string.append(parts.get(settings.lineStructure.get(i))).append('\n');
         }
-        System.out.println(upperLowerString);
+        string.append(upperLowerString).append('\n');
+
+        return String.valueOf(string);
 
     }
 }
