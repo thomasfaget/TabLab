@@ -134,7 +134,6 @@ public class MusicPartition {
                 }
             }
             notesString.append("|");
-            upperLowerString.append("-");
             for (StringBuilder part : parts.values()) {
                 part.append('|');
             }

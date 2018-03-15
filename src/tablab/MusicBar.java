@@ -247,10 +247,10 @@ public class MusicBar {
      * @param newStructure the new structure
      * @return the new notes
      */
-    private static Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
+    private Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
 
-        List<Fraction> oldEvolution = oldStructure.getFractionEvolution();
-        List<Fraction> newEvolution = newStructure.getFractionEvolution();
+        List<Fraction> oldEvolution = oldStructure.getFractionEvolution(settings);
+        List<Fraction> newEvolution = newStructure.getFractionEvolution(settings);
         Notes newNotes = new Notes();
 
         int oldIndex = 0;
