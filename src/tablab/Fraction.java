@@ -6,7 +6,7 @@ class Fraction {
     private BigInteger numerator;
     private BigInteger denominator;
 
-    Fraction(int numerator, int denominator) {
+    Fraction(long numerator, long denominator) {
         if(denominator == 0) {
             throw new IllegalArgumentException("denominator is zero");
         }
@@ -17,6 +17,14 @@ class Fraction {
         this.numerator = BigInteger.valueOf(numerator);
         this.denominator = BigInteger.valueOf(denominator);
         simplify();
+    }
+
+    public long getNumerator() {
+        return numerator.intValue();
+    }
+
+    public int getDenominator() {
+        return denominator.intValue();
     }
 
     public double doubleValue() {
