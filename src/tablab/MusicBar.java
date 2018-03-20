@@ -106,9 +106,9 @@ public class MusicBar {
      * @param beatNumber the beat number
      * @return true if alternative structure
      */
-    public boolean hasSpecialStructure(int beatNumber) {
+    public boolean hasSpecialBeatStructure(int beatNumber) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
-        return musicBeat != null && musicBeat.hasSpecialStructure();
+        return musicBeat != null && musicBeat.hasSpecialBeatStructure();
     }
 
     /**
@@ -118,11 +118,11 @@ public class MusicBar {
      * @param structure the alternative structure to use on the beat, set null the remove the current alternative structure
      * @param beatNumber the beat number
      */
-    public void setSpecialStructure(BeatStructure structure, int beatNumber) {
+    public void setSpecialBeatStructure(BeatStructure structure, int beatNumber) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
         if (musicBeat != null) {
-            BeatStructure oldBeatStructure = musicBeat.hasSpecialStructure() ? musicBeat.specialStructure : settings.beatStructure;
-            musicBeat.specialStructure = structure;
+            BeatStructure oldBeatStructure = musicBeat.hasSpecialBeatStructure() ? musicBeat.specialBeatStructure : settings.beatStructure;
+            musicBeat.specialBeatStructure = structure;
 
             // Update the notes, to match with the new structure
             if (structure != null && structure != oldBeatStructure) {
@@ -143,9 +143,9 @@ public class MusicBar {
      * @param beatNumber the beat number
      * @return the alternative structure
      */
-    public BeatStructure getSpecialStructure(int beatNumber) {
+    public BeatStructure getSpecialBeatStructure(int beatNumber) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
-        return musicBeat == null ? null : musicBeat.specialStructure;
+        return musicBeat == null ? null : musicBeat.specialBeatStructure;
     }
 
     /**
@@ -154,8 +154,8 @@ public class MusicBar {
      * @return the structure of the beat
      */
     public BeatStructure getBeatStructure(int beatNumber) {
-        if (hasSpecialStructure(beatNumber)) {
-            return getSpecialStructure(beatNumber);
+        if (hasSpecialBeatStructure(beatNumber)) {
+            return getSpecialBeatStructure(beatNumber);
         }
         return settings.beatStructure;
     }
@@ -169,7 +169,7 @@ public class MusicBar {
 
         for (MusicBeat musicBeat : musicBeats) {
             MusicBeat newMusicBeat = new MusicBeat();
-            newMusicBeat.specialStructure = musicBeat.specialStructure;
+            newMusicBeat.specialBeatStructure = musicBeat.specialBeatStructure;
 
             for (String lineType : musicBeat.keySet()) {
                 Notes notes = musicBeat.get(lineType).copyNotes();
@@ -279,10 +279,15 @@ public class MusicBar {
     // All the notes (all the lines) on the duration of a beat
     private class MusicBeat extends HashMap<String, Notes> {
 
-        BeatStructure specialStructure = null;
+        LineStructure specialLineStructure = null;
+        BeatStructure specialBeatStructure = null;
 
-        boolean hasSpecialStructure() {
-            return specialStructure != null;
+        boolean hasSpecialBeatStructure() {
+            return specialBeatStructure != null;
+        }
+
+        boolean hasSpecialLineStructure() {
+            return specialLineStructure != null;
         }
     }
 }

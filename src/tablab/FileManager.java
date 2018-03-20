@@ -119,8 +119,8 @@ public class FileManager {
             Element b = new Element(BEAT);
             b.setAttribute(NUMBER, String.valueOf(beat));
 
-            if (musicBar.hasSpecialStructure(beat)) {
-                b.setAttribute(BEAT_STRUCTURE, getBeatStructureAsString(musicBar.getSpecialStructure(beat)));
+            if (musicBar.hasSpecialBeatStructure(beat)) {
+                b.setAttribute(BEAT_STRUCTURE, getBeatStructureAsString(musicBar.getSpecialBeatStructure(beat)));
             }
 
             for (String lineType : scoreSettings.lineStructure) {
@@ -210,7 +210,7 @@ public class FileManager {
             Element beat = beats.get(i);
             Attribute att = beat.getAttribute(BEAT_STRUCTURE);
             if (att != null) {
-                musicBar.setSpecialStructure(createBeatStructureFromString(att.getValue()), i+1);
+                musicBar.setSpecialBeatStructure(createBeatStructureFromString(att.getValue()), i+1);
             }
             for (Element line : beat.getChildren(LINE)) {
                 long notes = Long.parseLong(line.getContent(0).getValue());
