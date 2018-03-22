@@ -9,9 +9,4 @@ public class ScoreSettings {
     public float tempo;
     public BeatStructure beatStructure;
     public LineStructure lineStructure;
-
-
-    public int getLinesNumber() {
-        return lineStructure.size();
-    }
 }
