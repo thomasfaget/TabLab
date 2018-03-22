@@ -102,9 +102,9 @@ public class MusicBar {
     }
 
     /**
-     * Check if the music bar has an alternative structureor a specific beat number
+     * Check if the music bar has an alternative beat structure for a specific beat number
      * @param beatNumber the beat number
-     * @return true if alternative structure
+     * @return true if alternative beat structure
      */
     public boolean hasSpecialBeatStructure(int beatNumber) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
@@ -112,10 +112,10 @@ public class MusicBar {
     }
 
     /**
-     * Add a alternative structure in bar for a specific beat number
+     * Add a alternative beat structure in bar for a specific beat number
      * Override the previous structure if there is already a alternative structure
      * Use 'null' as parameter to remove the special structure
-     * @param structure the alternative structure to use on the beat, set null the remove the current alternative structure
+     * @param structure the alternative beat structure to use on the beat, set null the remove the current alternative structure
      * @param beatNumber the beat number
      */
     public void setSpecialBeatStructure(BeatStructure structure, int beatNumber) {
@@ -127,19 +127,19 @@ public class MusicBar {
             // Update the notes, to match with the new structure
             if (structure != null && structure != oldBeatStructure) {
                 for (String lineType : musicBeat.keySet()) {
-                    musicBeat.put(lineType, changeNotesStructure(musicBeat.get(lineType), oldBeatStructure, structure));
+                    musicBeat.put(lineType, changeNotesBeatStructure(musicBeat.get(lineType), oldBeatStructure, structure));
                 }
             }
             else if (structure == null) {
                 for (String lineType : musicBeat.keySet()) {
-                    musicBeat.put(lineType, changeNotesStructure(musicBeat.get(lineType), oldBeatStructure, settings.beatStructure));
+                    musicBeat.put(lineType, changeNotesBeatStructure(musicBeat.get(lineType), oldBeatStructure, settings.beatStructure));
                 }
             }
         }
     }
 
     /**
-     * Return the alternative structure of the bar for a specific beat number
+     * Return the alternative beat structure of the bar for a specific beat number
      * @param beatNumber the beat number
      * @return the alternative structure
      */
@@ -149,7 +149,7 @@ public class MusicBar {
     }
 
     /**
-     * Return the structure of the bar for a specific beat number, with checking the alternative structure
+     * Return the beat structure of the bar for a specific beat number, with checking the alternative structure
      * @param beatNumber the beat number
      * @return the structure of the beat
      */
@@ -159,6 +159,57 @@ public class MusicBar {
         }
         return settings.beatStructure;
     }
+
+
+    /**
+     * Check if the music bar has an alternative line structure for a specific beat number
+     * @param beatNumber the beat number
+     * @return true if alternative line structure
+     */
+    public boolean hasSpecialLineStructure(int beatNumber) {
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        return musicBeat != null && musicBeat.hasSpecialLineStructure();
+    }
+
+    /**
+     * Add a alternative line structure in bar for a specific beat number
+     * Override the previous structure if there is already a alternative structure
+     * Use 'null' as parameter to remove the special structure
+     * @param structure the alternative line structure to use on the beat, set null the remove the current alternative structure
+     * @param beatNumber the beat number
+     */
+    public void setSpecialLineStructure(LineStructure structure, int beatNumber) {
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        if (musicBeat != null) {
+            LineStructure oldBeatStructure = musicBeat.hasSpecialLineStructure() ? musicBeat.specialLineStructure : settings.lineStructure;
+            MusicBeat newMusicBeat = changeNotesLineStructure(musicBeat, oldBeatStructure, structure);
+            newMusicBeat.specialLineStructure = structure;
+            musicBeats.set(beatNumber-1, newMusicBeat);
+        }
+    }
+
+    /**
+     * Return the alternative line structure of the bar for a specific beat number
+     * @param beatNumber the beat number
+     * @return the alternative structure
+     */
+    public LineStructure getSpecialLineStructure(int beatNumber) {
+        MusicBeat musicBeat = getBeatAt(beatNumber);
+        return musicBeat == null ? null : musicBeat.specialLineStructure;
+    }
+
+    /**
+     * Return the line structure of the bar for a specific beat number, with checking the alternative structure
+     * @param beatNumber the beat number
+     * @return the structure of the beat
+     */
+    public LineStructure getLineStructure(int beatNumber) {
+        if (hasSpecialLineStructure(beatNumber)) {
+            return getSpecialLineStructure(beatNumber);
+        }
+        return settings.lineStructure;
+    }
+
 
     /**
      * Get a copy of the music bar
@@ -195,7 +246,7 @@ public class MusicBar {
         if (musicBeat1 != null && musicBeat2 != null) {
             for (String lineType : musicBeat1.keySet()) {
                 if (musicBeat2.containsKey(lineType)) {
-                    musicBeat2.put(lineType, changeNotesStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+                    musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
                 }
             }
         }
@@ -213,7 +264,7 @@ public class MusicBar {
         MusicBeat musicBeat2 = getBeatAt(beatNumberToPaste);
 
         if (musicBeat1 != null && musicBeat2 != null && musicBeat2.containsKey(lineType)) {
-            musicBeat2.put(lineType, changeNotesStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+            musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
         }
     }
 
@@ -247,7 +298,7 @@ public class MusicBar {
      * @param newStructure the new structure
      * @return the new notes
      */
-    private Notes changeNotesStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
+    private Notes changeNotesBeatStructure(Notes oldNotes, BeatStructure oldStructure, BeatStructure newStructure) {
 
         List<Fraction> oldEvolution = oldStructure.getFractionEvolution(settings);
         List<Fraction> newEvolution = newStructure.getFractionEvolution(settings);
@@ -266,7 +317,6 @@ public class MusicBar {
             }
             else if (oldEvolution.get(oldIndex).doubleValue() > newEvolution.get(newIndex).doubleValue()) {
                 newIndex ++;
-
             }
             else {
                 oldIndex ++;
@@ -275,6 +325,45 @@ public class MusicBar {
 
         return newNotes;
     }
+
+    private MusicBeat changeNotesLineStructure(MusicBeat musicBeat, LineStructure oldStructure, LineStructure newStructure) {
+
+        int oldIndex = 0;
+        int newIndex = 0;
+        MusicBeat newMusicBeat = new MusicBeat();
+
+        while (oldIndex < oldStructure.size() && newIndex < newStructure.size()) {
+
+            if (oldStructure.get(oldIndex).equals(newStructure.get(newIndex))) {
+                newMusicBeat.put(oldStructure.get(oldIndex), musicBeat.get(oldStructure.get(oldIndex)));
+                oldIndex++;
+                newIndex++;
+            }
+            else if (!oldStructure.get(oldIndex).equals(newStructure.get(newIndex)) && !oldStructure.contains(newStructure.get(newIndex))) {
+                newMusicBeat.put(newStructure.get(newIndex), new Notes());
+                newIndex++;
+            }
+            else {
+                oldIndex++;
+            }
+        }
+        if (newIndex < newStructure.size()) {
+            for (int i = newIndex; i < newStructure.size(); i++) {
+                newMusicBeat.put(newStructure.get(i), new Notes());
+            }
+        }
+
+
+        return newMusicBeat;
+    }
+
+
+    // 1 2 5 3 new
+    // 1 2 4 5 old
+    // -> 1 2 3 5
+
+    // 1 2 3 4
+    // 1 2 3
 
     // All the notes (all the lines) on the duration of a beat
     private class MusicBeat extends HashMap<String, Notes> {
