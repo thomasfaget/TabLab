@@ -108,13 +108,22 @@ public class MusicPartition {
         StringBuilder notesString = new StringBuilder("--|");
         Map<String, StringBuilder> parts = new HashMap<>();
 
+        // Create the full line structure :
+        LineStructure commonLineStructure = new LineStructure();
+        for (MusicBar musicBar : musicBars) {
+            for (int i = 1; i <= settings.notesNumber; i++) {
+                LineStructure structure = musicBar.getLineStructure(i);
+                commonLineStructure = commonLineStructure.getUnion(structure);
+            }
+        }
+
         // Set the titles :
         title1.append("# Title : ").append(title).append(" -- Author : ").append(author);
         title2.append("# Structure : ").append(settings.notesNumber).append("/").append(settings.notesValue).append(" -- Tempo : ").append((int) (settings.tempo)).append(" bpm");
 
         // Set the part name :
-        for (int i = 0; i < settings.getLinesNumber(); i++) {
-            parts.put(settings.lineStructure.get(i), new StringBuilder(settings.lineStructure.get(i).substring(0, 2) + '|'));
+        for (String line : commonLineStructure) {
+            parts.put(line, new StringBuilder(line.substring(0, 2) + '|'));
         }
 
         // Fill the tab
@@ -124,7 +133,7 @@ public class MusicPartition {
 
                     notesString.append(note == 1 ? beat : "-");
                     upperLowerString.append("-");
-                    for (String lineType : parts.keySet()) {
+                    for (String lineType : commonLineStructure) {
                         String s = musicBar.isNote(lineType, beat, note) ? "x" : "-";
                         parts.get(lineType).append(s);
                     }
@@ -140,8 +149,8 @@ public class MusicPartition {
         string.append(title1).append('\n');
         string.append(title2).append('\n');
         string.append(notesString).append('\n');
-        for (int i = 0; i < settings.getLinesNumber(); i++) {
-            string.append(parts.get(settings.lineStructure.get(i))).append('\n');
+        for (int i = 0; i < commonLineStructure.size(); i++) {
+            string.append(parts.get(commonLineStructure.get(i))).append('\n');
         }
         string.append(upperLowerString).append('\n');
 
