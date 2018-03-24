@@ -357,14 +357,6 @@ public class MusicBar {
         return newMusicBeat;
     }
 
-
-    // 1 2 5 3 new
-    // 1 2 4 5 old
-    // -> 1 2 3 5
-
-    // 1 2 3 4
-    // 1 2 3
-
     // All the notes (all the lines) on the duration of a beat
     private class MusicBeat extends HashMap<String, Notes> {
 
