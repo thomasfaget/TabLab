@@ -90,16 +90,16 @@ public class FileManager {
         return settings;
     }
 
-    private static Element getLineStructure(LineStructure lineStructure) {
-        Element ls = new Element(LINE_STRUCTURE);
-        ls.addContent(String.join(SEP, lineStructure));
-        return ls;
-    }
-
     private static Element getBeatStructure(BeatStructure beatStructure) {
         Element bs = new Element(BEAT_STRUCTURE);
         bs.addContent(getBeatStructureAsString(beatStructure));
         return bs;
+    }
+
+    private static Element getLineStructure(LineStructure lineStructure) {
+        Element ls = new Element(LINE_STRUCTURE);
+        ls.addContent(getLineStructureAsString(lineStructure));
+        return ls;
     }
 
     private static String getBeatStructureAsString(BeatStructure beatStructure) {
@@ -112,6 +112,17 @@ public class FileManager {
         return String.valueOf(str);
     }
 
+    private static String getLineStructureAsString(LineStructure lineStructure) {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < lineStructure.size(); i++) {
+            if (i > 0)
+                str.append(SEP);
+            str.append(lineStructure.get(i));
+        }
+        return String.valueOf(str);
+    }
+
+
     private static Element getMusicBar(MusicBar musicBar, ScoreSettings scoreSettings) {
         Element bar = new Element(MUSIC_BAR);
 
@@ -123,7 +134,11 @@ public class FileManager {
                 b.setAttribute(BEAT_STRUCTURE, getBeatStructureAsString(musicBar.getSpecialBeatStructure(beat)));
             }
 
-            for (String lineType : scoreSettings.lineStructure) {
+            if (musicBar.hasSpecialLineStructure(beat)) {
+                b.setAttribute(LINE_STRUCTURE, getLineStructureAsString(musicBar.getSpecialLineStructure(beat)));
+            }
+
+            for (String lineType : musicBar.getLineStructure(beat)) {
                 Element line = new Element(LINE);
                 line.setAttribute(PART, lineType);
 
@@ -200,6 +215,12 @@ public class FileManager {
         return beatStructure;
     }
 
+    private static LineStructure createLineStructureFromString(String structure) {
+        LineStructure lineStructure = new LineStructure();
+        lineStructure.addAll(Arrays.asList(structure.split(SEP)));
+        return lineStructure;
+    }
+
     private static MusicBar createMusicBar(Element bar, ScoreSettings scoreSettings) {
         MusicBar musicBar = new MusicBar(scoreSettings);
         musicBar.createEmptyBar();
@@ -208,10 +229,15 @@ public class FileManager {
         beats = beats.stream().sorted(Comparator.comparingInt(beat -> Integer.parseInt(beat.getAttributeValue(NUMBER)))).collect(Collectors.toList());
         for (int i = 0; i < beats.size(); i++) {
             Element beat = beats.get(i);
-            Attribute att = beat.getAttribute(BEAT_STRUCTURE);
-            if (att != null) {
-                musicBar.setSpecialBeatStructure(createBeatStructureFromString(att.getValue()), i+1);
+            Attribute beatAtt = beat.getAttribute(BEAT_STRUCTURE);
+            if (beatAtt != null) {
+                musicBar.setSpecialBeatStructure(createBeatStructureFromString(beatAtt.getValue()), i+1);
             }
+            Attribute lineAtt = beat.getAttribute(LINE_STRUCTURE);
+            if (lineAtt != null) {
+                musicBar.setSpecialLineStructure(createLineStructureFromString(lineAtt.getValue()), i+1);
+            }
+
             for (Element line : beat.getChildren(LINE)) {
                 long notes = Long.parseLong(line.getContent(0).getValue());
                 musicBar.setCompressedNotes(line.getAttributeValue(PART), i+1, notes);
