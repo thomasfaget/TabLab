@@ -8,7 +8,7 @@ import java.util.*;
  */
 public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
 
-    // The time of a note
+    // Basic notes, with time value
     public enum NoteTime {
         WHOLE_NOTE(1),
         HALF_NOTE(2),

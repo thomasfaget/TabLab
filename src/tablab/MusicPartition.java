@@ -149,8 +149,8 @@ public class MusicPartition {
         string.append(title1).append('\n');
         string.append(title2).append('\n');
         string.append(notesString).append('\n');
-        for (int i = 0; i < commonLineStructure.size(); i++) {
-            string.append(parts.get(commonLineStructure.get(i))).append('\n');
+        for (String line : commonLineStructure) {
+            string.append(parts.get(line)).append('\n');
         }
         string.append(upperLowerString).append('\n');
 

@@ -247,10 +247,15 @@ public class FileManager {
         return musicBar;
     }
 
+    /** write the partition into a txt file
+     *
+     * @param path the path of the partition
+     * @param musicPartition the partition
+     * @throws FileNotFoundException if error with creation or print of the file
+     */
     public static void exportToTxt(String path, MusicPartition musicPartition) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(path);
         writer.print(musicPartition.toString());
         writer.close();
-
     }
 }
