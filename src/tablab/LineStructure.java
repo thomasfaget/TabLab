@@ -1,8 +1,6 @@
 package tablab;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /** LineStructure contains the labels of the lines of the tab.
  * Prevents duplicate elements in the structure
@@ -106,49 +104,14 @@ public class LineStructure extends ArrayList<String> {
      * @return the intersection of the structure
      */
     public LineStructure getIntersection(LineStructure otherStructure) {
-        LineStructure resultStructure = new LineStructure();
+        LineStructure list = new LineStructure();
 
-        for (String line : this) {
-            if (otherStructure.contains(line)) {
-                resultStructure.add(line);
+        for (String s : this) {
+            if (otherStructure.contains(s)) {
+                list.add(s);
             }
         }
-        return resultStructure;
-    }
-    public LineStructure getIntersection2(LineStructure otherStructure) {
-        LineStructure resultStructure = new LineStructure();
-
-        int index1 = 0;
-        int index2 = 0;
-
-        while (index1 < this.size() && index2 < otherStructure.size()) {
-
-            if (this.get(index1).equals(otherStructure.get(index2))) {
-                if (!resultStructure.contains(this.get(index1))) {
-                    resultStructure.add(this.get(index1));
-                }
-                index1++;
-                index2++;
-            }
-            else if (this.contains(otherStructure.get(index2)) && !otherStructure.contains(this.get(index1))) {
-                if (!resultStructure.contains(otherStructure.get(index2))) {
-                    resultStructure.add(otherStructure.get(index2));
-                }
-                index2++;
-            }
-            else if (otherStructure.contains(this.get(index1)) && !this.contains(otherStructure.get(index2))) {
-                if (!resultStructure.contains(this.get(index1))) {
-                    resultStructure.add(this.get(index1));
-                }
-                index1++;
-            }
-            else {
-                index1++;
-                index2++;
-            }
-        }
-
-        return resultStructure;
+        return list;
     }
 
     /**
@@ -158,20 +121,16 @@ public class LineStructure extends ArrayList<String> {
      * @return the uni of the structuonre
      */
     public LineStructure getUnion(LineStructure otherStructure) {
-        LineStructure resultStructure = new LineStructure();
+        Set<String> set = new HashSet<>();
 
-        resultStructure.addAll(this);
+        set.addAll(this);
+        set.addAll(otherStructure);
 
-        for (String line : otherStructure) {
-            if (!this.contains(line)) {
-                resultStructure.add(line);
-            }
-        }
-        return resultStructure;
+        return new LineStructure(set);
     }
 
     /**
-     * Distinct all elements of a list
+     * Distinct all the elements of a list
      *
      * @param structure the list to distinct
      * @return the distinct list
