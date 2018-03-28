@@ -238,9 +238,6 @@ public class FileManager {
                 return Integer.parseInt(o1.getAttributeValue(NUMBER)) - Integer.parseInt(o2.getAttributeValue(NUMBER));
             }
         });
-        for (Element beat : beats) {
-            System.out.println(beat.getAttributeValue(NUMBER));
-        }
         for (int i = 0; i < beats.size(); i++) {
             Element beat = beats.get(i);
             Attribute beatAtt = beat.getAttribute(BEAT_STRUCTURE);
