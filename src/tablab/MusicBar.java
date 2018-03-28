@@ -292,7 +292,7 @@ public class MusicBar {
     }
 
     /**
-     * Change the notes to match with the new structure
+     * Change the notes to match with the new beat structure
      * @param oldNotes the notes to update
      * @param oldStructure the old structure
      * @param newStructure the new structure
@@ -326,6 +326,13 @@ public class MusicBar {
         return newNotes;
     }
 
+    /**
+     * Change the music beat to match with the new line structure
+     * @param musicBeat the music beat to update
+     * @param oldStructure the old structure
+     * @param newStructure the new structure
+     * @return the new music beat
+     */
     private MusicBeat changeNotesLineStructure(MusicBeat musicBeat, LineStructure oldStructure, LineStructure newStructure) {
 
         int oldIndex = 0;
@@ -353,11 +360,13 @@ public class MusicBar {
             }
         }
 
-
         return newMusicBeat;
     }
 
-    // All the notes (all the lines) on the duration of a beat
+    /**
+     * The MusicBeat contains all the information of a music bar on the duration of a beat
+     * Coutains Notes and alternative structures
+     */
     private class MusicBeat extends HashMap<String, Notes> {
 
         LineStructure specialLineStructure = null;
