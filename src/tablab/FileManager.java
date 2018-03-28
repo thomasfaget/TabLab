@@ -11,9 +11,9 @@ import org.jdom2.output.XMLOutputter;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FileManager {
 
@@ -175,7 +175,13 @@ public class FileManager {
         MusicPartition musicPartition = new MusicPartition(title, author, scoreSettings);
 
         List<Element> bars = partition.getChild(BARS).getChildren(MUSIC_BAR);
-        bars = bars.stream().sorted(Comparator.comparingInt(bar -> Integer.parseInt(bar.getAttributeValue(NUMBER)))).collect(Collectors.toList());
+        Collections.sort(bars, new Comparator<Element>() {
+            @Override
+            public int compare(Element o1, Element o2) {
+                return Integer.parseInt(o1.getAttributeValue(NUMBER)) - Integer.parseInt(o2.getAttributeValue(NUMBER));
+            }
+        });
+
         for (Element bar : bars) {
             musicPartition.addMusicBar(createMusicBar(bar, scoreSettings));
         }
@@ -226,7 +232,15 @@ public class FileManager {
         musicBar.createEmptyBar();
 
         List<Element> beats = bar.getChildren(BEAT);
-        beats = beats.stream().sorted(Comparator.comparingInt(beat -> Integer.parseInt(beat.getAttributeValue(NUMBER)))).collect(Collectors.toList());
+        Collections.sort(beats, new Comparator<Element>() {
+            @Override
+            public int compare(Element o1, Element o2) {
+                return Integer.parseInt(o1.getAttributeValue(NUMBER)) - Integer.parseInt(o2.getAttributeValue(NUMBER));
+            }
+        });
+        for (Element beat : beats) {
+            System.out.println(beat.getAttributeValue(NUMBER));
+        }
         for (int i = 0; i < beats.size(); i++) {
             Element beat = beats.get(i);
             Attribute beatAtt = beat.getAttribute(BEAT_STRUCTURE);
