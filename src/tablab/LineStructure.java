@@ -3,7 +3,6 @@ package tablab;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /** LineStructure contains the labels of the lines of the tab.
  * Prevents duplicate elements in the structure
@@ -74,7 +73,7 @@ public class LineStructure extends ArrayList<String> {
         List<String> c2 = new ArrayList<>(c);
 
         // Remove duplicate elements in c2 and current list
-        List<String> c3 = c2.stream().distinct().collect(Collectors.toList());
+        List<String> c3 = distinct(c2);
         for (String s : c2) {
             if (this.contains(s)) {
                 c3.remove(s);
@@ -90,7 +89,7 @@ public class LineStructure extends ArrayList<String> {
         List<String> c2 = new ArrayList<>(c);
 
         // Remove duplicate elements in c2 and current list
-        List<String> c3  = c2.stream().distinct().collect(Collectors.toList());
+        List<String> c3 = distinct(c2);
         for (String s : c2) {
             if (this.contains(s)) {
                 c3.remove(s);
@@ -116,6 +115,41 @@ public class LineStructure extends ArrayList<String> {
         }
         return resultStructure;
     }
+    public LineStructure getIntersection2(LineStructure otherStructure) {
+        LineStructure resultStructure = new LineStructure();
+
+        int index1 = 0;
+        int index2 = 0;
+
+        while (index1 < this.size() && index2 < otherStructure.size()) {
+
+            if (this.get(index1).equals(otherStructure.get(index2))) {
+                if (!resultStructure.contains(this.get(index1))) {
+                    resultStructure.add(this.get(index1));
+                }
+                index1++;
+                index2++;
+            }
+            else if (this.contains(otherStructure.get(index2)) && !otherStructure.contains(this.get(index1))) {
+                if (!resultStructure.contains(otherStructure.get(index2))) {
+                    resultStructure.add(otherStructure.get(index2));
+                }
+                index2++;
+            }
+            else if (otherStructure.contains(this.get(index1)) && !this.contains(otherStructure.get(index2))) {
+                if (!resultStructure.contains(this.get(index1))) {
+                    resultStructure.add(this.get(index1));
+                }
+                index1++;
+            }
+            else {
+                index1++;
+                index2++;
+            }
+        }
+
+        return resultStructure;
+    }
 
     /**
      * Get the union between this structure and an other
@@ -131,6 +165,22 @@ public class LineStructure extends ArrayList<String> {
         for (String line : otherStructure) {
             if (!this.contains(line)) {
                 resultStructure.add(line);
+            }
+        }
+        return resultStructure;
+    }
+
+    /**
+     * Distinct all elements of a list
+     *
+     * @param structure the list to distinct
+     * @return the distinct list
+     */
+    private static List<String> distinct(List<String> structure) {
+        LineStructure resultStructure = new LineStructure();
+        for (String s : structure) {
+            if (!resultStructure.contains(s)) {
+                resultStructure.add(s);
             }
         }
         return resultStructure;
