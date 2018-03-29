@@ -121,12 +121,15 @@ public class LineStructure extends ArrayList<String> {
      * @return the uni of the structuonre
      */
     public LineStructure getUnion(LineStructure otherStructure) {
-        Set<String> set = new HashSet<>();
+        LineStructure resultStructure = (LineStructure) this.clone();
 
-        set.addAll(this);
-        set.addAll(otherStructure);
+        for (String s : otherStructure) {
+            if (!resultStructure.contains(s)) {
+                resultStructure.add(s);
+            }
+        }
 
-        return new LineStructure(set);
+        return resultStructure;
     }
 
     /**
