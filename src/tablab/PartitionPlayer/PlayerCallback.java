@@ -38,6 +38,8 @@ public interface PlayerCallback {
      * @param barNumber the current bar
      * @param beatNumber the current beat
      * @param noteNumber the current note
+     *
+     * @throws InterruptedException This method must not to catch InterruptedException
      */
-    void onNextNote(int barNumber, int beatNumber, int noteNumber);
+    void onNextNote(int barNumber, int beatNumber, int noteNumber) throws InterruptedException;
 }
