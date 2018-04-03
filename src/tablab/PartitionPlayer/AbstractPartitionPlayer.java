@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class AbstractPartitionPlayer implements PartitionPlayer {
 
     // The thread running the player
-    private Thread thread = new Thread(new PlayerRunnable());
+    private Thread thread;
 
     // State of the player
     private boolean isStarted;
@@ -51,6 +51,7 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
         isStarted = true;
         isPaused = false;
         // start playing
+        thread = new Thread(new PlayerRunnable());
         thread.start();
     }
 
@@ -165,7 +166,9 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
 
                         // Sleep with the given time :
                         float sleepTime = noteDelay.delay - (System.currentTimeMillis() - currentTime);
-                        sleep((long) sleepTime, (int) (1000 * (sleepTime - (long) sleepTime)));
+                        if (sleepTime > 0) {
+                            sleep((long) sleepTime, (int) (1000 * (sleepTime - (long) sleepTime)));
+                        }
                     }
                 }
                 // Handle interruption (pause and stop)
