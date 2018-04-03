@@ -47,7 +47,9 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
 
     public void playPartition(MusicPartition partition) {
         this.partition = partition;
-        stopPlaying();
+        if (isStarted) {
+            stopPlaying();
+        }
         isStarted = true;
         isPaused = false;
         // start playing
