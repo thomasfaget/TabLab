@@ -20,7 +20,7 @@ public interface PlayerCallback {
     void onPause();
     /**
      * Method called when the player resumes the partition.
-     * If the partition is not paused or not playing, this method is still called
+     * If the partition is not paused or not playing, this method is still called.
      */
     void onResume();
 
