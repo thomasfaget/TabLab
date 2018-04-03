@@ -56,7 +56,7 @@ public class MusicPartition {
      * @param musicBar the bar to add
      */
     public void addMusicBar(int index, MusicBar musicBar) {
-        musicBars.add(index, musicBar);
+        musicBars.add(index-1, musicBar);
     }
 
     /**
@@ -65,7 +65,7 @@ public class MusicPartition {
      * @return the music bar
      */
     public MusicBar getMusicBar(int index) {
-        return musicBars.get(index);
+        return musicBars.get(index-1);
     }
 
     /** Get all the music bars
@@ -80,7 +80,7 @@ public class MusicPartition {
      * @param musicBar the music bar to set
      */
     public void setMusicBar(int index, MusicBar musicBar) {
-        musicBars.set(index, musicBar);
+        musicBars.set(index-1, musicBar);
     }
 
     /**
@@ -96,7 +96,7 @@ public class MusicPartition {
      * @param index the index of the bar to remove
      */
     public void removeMusicBar(int index) {
-        musicBars.remove(index);
+        musicBars.remove(index-1);
     }
 
 
