@@ -2,7 +2,7 @@ package tablab;
 
 import java.math.BigInteger;
 
-class Fraction {
+public class Fraction {
     private BigInteger numerator;
     private BigInteger denominator;
 
