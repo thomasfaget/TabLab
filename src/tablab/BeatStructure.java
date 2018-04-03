@@ -50,7 +50,7 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
      * Each fraction in the result represent the relative time of the associated NoteTime
      * @return a list of fraction from 0 to 1
      */
-    List<Fraction> getFractionEvolution(ScoreSettings settings) {
+    public List<Fraction> getFractionEvolution(ScoreSettings settings) {
         List<Fraction> fractions = new ArrayList<>();
         fractions.add(new Fraction(0,1));
 
