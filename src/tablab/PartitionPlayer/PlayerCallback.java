@@ -1,5 +1,9 @@
 package tablab.PartitionPlayer;
 
+/** PlayerCallback is an object used by PartitionPlayer to communicate with other object.
+ * PartitionPlayer throws events (on start, on finish, or on each note played) and calls the callback with the associated method.
+ * The callback can be registered with PartitionPlayer.
+ */
 public interface PlayerCallback {
 
     /**
@@ -18,6 +22,7 @@ public interface PlayerCallback {
      * If the partition is already paused or not playing, this method is still called.
      */
     void onPause();
+
     /**
      * Method called when the player resumes the partition.
      * If the partition is not paused or not playing, this method is still called.
