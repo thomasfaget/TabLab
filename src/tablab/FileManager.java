@@ -1,6 +1,5 @@
 package tablab;
 
-
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -74,17 +73,17 @@ public class FileManager {
         return partition;
     }
 
-    private static Element getSettings(ScoreSettings scoreSettings) {
+    private static Element getSettings(PartitionSettings partitionSettings) {
         Element settings = new Element(SETTINGS);
 
-        settings.setAttribute(NOTES_NUMBER, String.valueOf(scoreSettings.notesNumber));
-        settings.setAttribute(NOTES_VALUE, String.valueOf(scoreSettings.notesValue));
-        settings.setAttribute(TEMPO, String.valueOf(scoreSettings.tempo));
+        settings.setAttribute(NOTES_NUMBER, String.valueOf(partitionSettings.notesNumber));
+        settings.setAttribute(NOTES_VALUE, String.valueOf(partitionSettings.notesValue));
+        settings.setAttribute(TEMPO, String.valueOf(partitionSettings.tempo));
 
-        Element bs = getBeatStructure(scoreSettings.beatStructure);
+        Element bs = getBeatStructure(partitionSettings.beatStructure);
         settings.addContent(bs);
 
-        Element ls = getLineStructure(scoreSettings.lineStructure);
+        Element ls = getLineStructure(partitionSettings.lineStructure);
         settings.addContent(ls);
 
         return settings;
@@ -123,10 +122,10 @@ public class FileManager {
     }
 
 
-    private static Element getMusicBar(MusicBar musicBar, ScoreSettings scoreSettings) {
+    private static Element getMusicBar(MusicBar musicBar, PartitionSettings partitionSettings) {
         Element bar = new Element(MUSIC_BAR);
 
-        for (int beat = 1; beat <= scoreSettings.notesNumber; beat++) {
+        for (int beat = 1; beat <= partitionSettings.notesNumber; beat++) {
             Element b = new Element(BEAT);
             b.setAttribute(NUMBER, String.valueOf(beat));
 
@@ -170,9 +169,9 @@ public class FileManager {
 
         String title = partition.getAttributeValue(TITLE);
         String author = partition.getAttributeValue(AUTHOR);
-        ScoreSettings scoreSettings = createSettings(partition.getChild(SETTINGS));
+        PartitionSettings partitionSettings = createSettings(partition.getChild(SETTINGS));
 
-        MusicPartition musicPartition = new MusicPartition(title, author, scoreSettings);
+        MusicPartition musicPartition = new MusicPartition(title, author, partitionSettings);
 
         List<Element> bars = partition.getChild(BARS).getChildren(MUSIC_BAR);
         Collections.sort(bars, new Comparator<Element>() {
@@ -183,22 +182,22 @@ public class FileManager {
         });
 
         for (Element bar : bars) {
-            musicPartition.addMusicBar(createMusicBar(bar, scoreSettings));
+            musicPartition.addMusicBar(createMusicBar(bar, partitionSettings));
         }
 
         return musicPartition;
     }
 
-    private static ScoreSettings createSettings(Element settings) {
-        ScoreSettings scoreSettings = new ScoreSettings();
-        scoreSettings.notesNumber = Integer.parseInt(settings.getAttributeValue(NOTES_NUMBER));
-        scoreSettings.notesValue = Integer.parseInt(settings.getAttributeValue(NOTES_VALUE));
-        scoreSettings.tempo = Float.parseFloat(settings.getAttributeValue(TEMPO));
+    private static PartitionSettings createSettings(Element settings) {
+        PartitionSettings partitionSettings = new PartitionSettings();
+        partitionSettings.notesNumber = Integer.parseInt(settings.getAttributeValue(NOTES_NUMBER));
+        partitionSettings.notesValue = Integer.parseInt(settings.getAttributeValue(NOTES_VALUE));
+        partitionSettings.tempo = Float.parseFloat(settings.getAttributeValue(TEMPO));
 
-        scoreSettings.lineStructure = createLineStructure(settings.getChild(LINE_STRUCTURE));
-        scoreSettings.beatStructure = createBeatStructure(settings.getChild(BEAT_STRUCTURE));
+        partitionSettings.lineStructure = createLineStructure(settings.getChild(LINE_STRUCTURE));
+        partitionSettings.beatStructure = createBeatStructure(settings.getChild(BEAT_STRUCTURE));
 
-        return scoreSettings;
+        return partitionSettings;
     }
 
     private static LineStructure createLineStructure(Element structure) {
@@ -227,8 +226,8 @@ public class FileManager {
         return lineStructure;
     }
 
-    private static MusicBar createMusicBar(Element bar, ScoreSettings scoreSettings) {
-        MusicBar musicBar = new MusicBar(scoreSettings);
+    private static MusicBar createMusicBar(Element bar, PartitionSettings partitionSettings) {
+        MusicBar musicBar = new MusicBar(partitionSettings);
         musicBar.createEmptyBar();
 
         List<Element> beats = bar.getChildren(BEAT);

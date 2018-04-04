@@ -11,9 +11,9 @@ import java.util.List;
 public class MusicBar {
 
     private List<MusicBeat> musicBeats;
-    private ScoreSettings settings;
+    private PartitionSettings settings;
 
-    public MusicBar(ScoreSettings settings) {
+    public MusicBar(PartitionSettings settings) {
         this.musicBeats = new ArrayList<>();
         this.settings = settings;
     }

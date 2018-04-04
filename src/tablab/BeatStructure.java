@@ -50,7 +50,7 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
      * Each fraction in the result represent the relative time of the associated NoteTime
      * @return a list of fraction from 0 to 1
      */
-    public List<Fraction> getFractionEvolution(ScoreSettings settings) {
+    public List<Fraction> getFractionEvolution(PartitionSettings settings) {
         List<Fraction> fractions = new ArrayList<>();
         fractions.add(new Fraction(0,1));
 
@@ -66,7 +66,7 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
      * Check the structure integrity, i.e. if the total duration of the notes is equal to 1 (the duration of a beat)
      * @return true if the structure is correct
      */
-    public boolean checkStructureIntegrity(ScoreSettings settings) {
+    public boolean checkStructureIntegrity(PartitionSettings settings) {
         float eps = 0.01f;
         float sum = 0;
         for (NoteTime noteTime : this) {

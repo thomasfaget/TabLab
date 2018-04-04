@@ -9,10 +9,10 @@ public class MusicPartition {
 
     private String title;
     private String author;
-    private ScoreSettings settings;
+    private PartitionSettings settings;
     private List<MusicBar> musicBars;
 
-    public MusicPartition(String title, String author, ScoreSettings settings) {
+    public MusicPartition(String title, String author, PartitionSettings settings) {
         this.title = title;
         this.author = author;
         this.settings = settings;
@@ -39,7 +39,7 @@ public class MusicPartition {
      * Get the settings of the partition
      * @return the settings
      */
-    public ScoreSettings getSettings() {
+    public PartitionSettings getSettings() {
         return settings;
     }
 
