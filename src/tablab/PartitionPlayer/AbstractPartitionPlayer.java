@@ -157,19 +157,24 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
 
                 try {
 
+                    long startTime = System.currentTimeMillis();
+                    float expectedTime = 0;
+
                     for (; i < noteDelays.size(); i++) {
                         NoteDelay noteDelay = noteDelays.get(i);
 
-                        long currentTime = System.currentTimeMillis();
-                        // Call the callback wiht the current position of the partition
+                        // Compute the expected time :
+                        expectedTime += noteDelay.delay;
+
+                        // Call the callback with the current position of the partition
                         for (PlayerCallback callback : callbacks) {
                             callback.onNextNote(noteDelay.barNumber, noteDelay.beatNumber, noteDelay.noteNumber);
                         }
 
-                        // Sleep with the given time :
-                        float sleepTime = noteDelay.delay - (System.currentTimeMillis() - currentTime);
+                        // Sleep the correct amount of time to match with the expected time :
+                        long sleepTime = (long) (expectedTime) - (System.currentTimeMillis() - startTime);
                         if (sleepTime > 0) {
-                            sleep((long) sleepTime, (int) (1000 * (sleepTime - (long) sleepTime)));
+                            sleep(sleepTime, 0);
                         }
                     }
                 }
@@ -196,6 +201,12 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
             for (PlayerCallback callback : callbacks) {
                 callback.onFinish();
             }
+
+            float expectedTime = 0;
+            for (NoteDelay noteDelay : noteDelays) {
+                expectedTime += noteDelay.delay;
+            }
+            System.out.println("expected time = " + expectedTime);
         }
     }
 
