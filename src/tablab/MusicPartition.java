@@ -128,6 +128,7 @@ public class MusicPartition {
 
         // Fill the tab
         for (MusicBar musicBar : musicBars) {
+            upperLowerString.append("-");
             for (int beat = 1; beat <= settings.notesNumber; beat++) {
                 for (int note = 1; note <= musicBar.getBeatStructure(beat).size(); note++) {
 
