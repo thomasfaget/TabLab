@@ -26,10 +26,9 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
      * A method to make wait the current with the given time
      *
      * @param millis millisecond to wait
-     * @param nano nanosecond to wait
      * @throws InterruptedException if exception with the method
      */
-    abstract void sleep(long millis, int nano) throws InterruptedException;
+    abstract void sleep(long millis) throws InterruptedException;
 
     /**
      * A method to lock the current thread, such as a mutual exclusion lock.
@@ -174,7 +173,7 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
                         // Sleep the correct amount of time to match with the expected time :
                         long sleepTime = (long) (expectedTime) - (System.currentTimeMillis() - startTime);
                         if (sleepTime > 0) {
-                            sleep(sleepTime, 0);
+                            sleep(sleepTime);
                         }
                     }
                 }

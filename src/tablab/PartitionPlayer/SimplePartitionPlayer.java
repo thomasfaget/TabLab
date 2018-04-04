@@ -12,8 +12,8 @@ public class SimplePartitionPlayer extends AbstractPartitionPlayer {
     private final Lock lock = new ReentrantLock(true);
 
     @Override
-    void sleep(long millis, int nano) throws InterruptedException {
-        Thread.sleep(millis, nano);
+    void sleep(long millis) throws InterruptedException {
+        Thread.sleep(millis);
     }
 
     @Override
