@@ -1,4 +1,4 @@
-package tablab.PartitionPlayer;
+package tablab.partitionPlayer;
 
 import tablab.Fraction;
 import tablab.MusicPartition;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * AbstractPartitionPlayer is an implementation of PartitionPlayer, with a abstraction for the multithreading aspects.
+ * AbstractPartitionPlayer is an implementation of partitionPlayer, with a abstraction for the multithreading aspects.
  * These aspects are sleeping on a thread or locking and unlocking of a mutex.
  */
 public abstract class AbstractPartitionPlayer implements PartitionPlayer {
