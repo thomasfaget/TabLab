@@ -154,6 +154,7 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
             int i = 0;
             while (isStarted && i != noteDelays.size()) {
 
+                // Player core : play all the partition and handle stop and pause
                 try {
 
                     long startTime = System.currentTimeMillis();
@@ -200,12 +201,6 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
             for (PlayerCallback callback : callbacks) {
                 callback.onFinish();
             }
-
-            float expectedTime = 0;
-            for (NoteDelay noteDelay : noteDelays) {
-                expectedTime += noteDelay.delay;
-            }
-            System.out.println("expected time = " + expectedTime);
         }
     }
 
