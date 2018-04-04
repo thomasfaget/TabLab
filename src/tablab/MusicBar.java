@@ -365,7 +365,7 @@ public class MusicBar {
 
     /**
      * The MusicBeat contains all the information of a music bar on the duration of a beat
-     * Coutains Notes and alternative structures
+     * Contains Notes and alternative structures
      */
     private class MusicBeat extends HashMap<String, Notes> {
 

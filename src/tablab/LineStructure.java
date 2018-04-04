@@ -118,7 +118,7 @@ public class LineStructure extends ArrayList<String> {
      * Get the union between this structure and an other
      *
      * @param otherStructure the other structure to compare
-     * @return the uni of the structuonre
+     * @return the union of the structure
      */
     public LineStructure getUnion(LineStructure otherStructure) {
         LineStructure resultStructure = (LineStructure) this.clone();
