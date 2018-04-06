@@ -1,10 +1,10 @@
-package tablab.PartitionPlayer;
+package tablab.partitionPlayer;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * A simple implementation of PartitionPlayer and AbstractPartitionPlayer.
+ * A simple implementation of partitionPlayer and AbstractPartitionPlayer.
  * This class use a ReentrantLock for the mutex and the method 'sleep' of 'Thread' to sleep on the current thread.
  */
 public class SimplePartitionPlayer extends AbstractPartitionPlayer {

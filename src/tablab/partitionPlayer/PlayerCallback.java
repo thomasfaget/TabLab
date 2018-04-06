@@ -1,8 +1,8 @@
-package tablab.PartitionPlayer;
+package tablab.partitionPlayer;
 
-/** PlayerCallback is an object used by PartitionPlayer to communicate with other object.
- * PartitionPlayer throws events (on start, on finish, or on each note played) and calls the callback with the associated method.
- * The callback can be registered with PartitionPlayer.
+/** PlayerCallback is an object used by partitionPlayer to communicate with other object.
+ * partitionPlayer throws events (on start, on finish, or on each note played) and calls the callback with the associated method.
+ * The callback can be registered with partitionPlayer.
  */
 public interface PlayerCallback {
 

@@ -1,8 +1,8 @@
-package tablab.PartitionPlayer;
+package tablab.partitionPlayer;
 
 import tablab.MusicPartition;
 
-/** PartitionPlayer is an class that can play in real time a partition, with realizing an event each time a note is played.
+/** partitionPlayer is an class that can play in real time a partition, with realizing an event each time a note is played.
  *
  * The speed of the player is given by the tempo, the time structure of the partition and the structure of each beat.
  * The events (each time a note is played and others) are done throw callbacks : the PlayerCallback.
