@@ -44,6 +44,14 @@ public class MusicPartition {
     }
 
     /**
+     * Get the number of Music bars
+     * @return the number of music bar
+     */
+    public int getMusicBarNumber() {
+        return musicBars.size();
+    }
+
+    /**
      * Add a music bar in the partition
      * @param musicBar the bar to add
      */
@@ -66,13 +74,6 @@ public class MusicPartition {
      */
     public MusicBar getMusicBar(int index) {
         return musicBars.get(index-1);
-    }
-
-    /** Get all the music bars
-     * @return the music bars
-     */
-    public List<MusicBar> getMusicBars() {
-        return musicBars;
     }
 
     /** Set a music bar in the partition
