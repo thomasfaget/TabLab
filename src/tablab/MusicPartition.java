@@ -1,5 +1,7 @@
 package tablab;
 
+import tablab.partitionListener.PartitionListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,7 @@ public class MusicPartition {
     private String author;
     private PartitionSettings settings;
     private List<MusicBar> musicBars;
+    private PartitionListenerList listenerList = new PartitionListenerList();
 
     public MusicPartition(String title, String author, PartitionSettings settings) {
         this.title = title;
@@ -49,6 +52,7 @@ public class MusicPartition {
      */
     public void addMusicBar(MusicBar musicBar) {
         musicBars.add(musicBar);
+        listenerList.notifyAllAddedMusicBar(musicBars.size());
     }
 
     /**
@@ -57,6 +61,8 @@ public class MusicPartition {
      */
     public void addMusicBar(int index, MusicBar musicBar) {
         musicBars.add(index-1, musicBar);
+        listenerList.notifyAllAddedMusicBar(index);
+
     }
 
     /**
@@ -88,7 +94,10 @@ public class MusicPartition {
      * @param musicBar the bar to remove
      */
     public void removeMusicBar(MusicBar musicBar) {
-        musicBars.remove(musicBar);
+        int index = musicBars.indexOf(musicBar);
+        if (musicBars.remove(musicBar)) {
+            listenerList.notifyAllRemovedMusicBar(index);
+        }
     }
 
     /**
@@ -97,6 +106,23 @@ public class MusicPartition {
      */
     public void removeMusicBar(int index) {
         musicBars.remove(index-1);
+        listenerList.notifyAllRemovedMusicBar(index);
+    }
+
+    /**
+     * Add a listener to the partition, the listener is called when a music bar is added or removed
+     * @param listener the listener to add
+     */
+    public void addPartitionListener(PartitionListener listener) {
+        listenerList.addListener(listener);
+    }
+
+    /**
+     * Remove a listener to the partition, the listener is called when a music bar is added or removed
+     * @param listener the listener to remove
+     */
+    public void removePartitionListener(PartitionListener listener) {
+        listenerList.removeListener(listener);
     }
 
 
@@ -157,5 +183,31 @@ public class MusicPartition {
 
         return String.valueOf(string);
 
+    }
+
+    /** A class to handle the listeners
+     */
+    private class PartitionListenerList {
+
+        private List<PartitionListener> partitionListeners = new ArrayList<>();
+
+        void addListener(PartitionListener listener) {
+            partitionListeners.add(listener);
+        }
+
+        void removeListener(PartitionListener listener) {
+            partitionListeners.remove(listener);
+        }
+
+        void notifyAllAddedMusicBar(int index) {
+            for (PartitionListener listener : partitionListeners) {
+                listener.addedMusicBar(index);
+            }
+        }
+        void notifyAllRemovedMusicBar(int index) {
+            for (PartitionListener listener : partitionListeners) {
+                listener.removedMusicBar(index);
+            }
+        }
     }
 }
