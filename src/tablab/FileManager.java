@@ -63,7 +63,7 @@ public class FileManager {
         partition.addContent(settings);
 
         Element bars = new Element(BARS);
-        for (int i = 0; i < musicPartition.getMusicBars().size(); i++) {
+        for (int i = 0; i < musicPartition.getMusicBarNumber(); i++) {
             Element bar = getMusicBar(musicPartition.getMusicBar(i), musicPartition.getSettings());
             bar.setAttribute(NUMBER, String.valueOf(i+1));
             bars.addContent(bar);
