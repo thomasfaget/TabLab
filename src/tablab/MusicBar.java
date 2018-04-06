@@ -1,5 +1,9 @@
 package tablab;
 
+import tablab.partitionListener.BeatStructureListener;
+import tablab.partitionListener.LineStructureListener;
+import tablab.partitionListener.NoteListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +16,7 @@ public class MusicBar {
 
     private List<MusicBeat> musicBeats;
     private PartitionSettings settings;
+    private MusicBarListenerList listenerList = new MusicBarListenerList();
 
     public MusicBar(PartitionSettings settings) {
         this.musicBeats = new ArrayList<>();
@@ -268,6 +273,30 @@ public class MusicBar {
         }
     }
 
+    public void addBeatStructureListener(BeatStructureListener listener) {
+        listenerList.addListener(listener);
+    }
+
+    public void removeBeatStructureListener(BeatStructureListener listener) {
+        listenerList.removeListener(listener);
+    }
+
+    public void addLineStructureListener(LineStructureListener listener) {
+        listenerList.addListener(listener);
+    }
+
+    public void removeLineStructureListener(LineStructureListener listener) {
+        listenerList.removeListener(listener);
+    }
+
+    public void addNoteListener(NoteListener listener) {
+        listenerList.addListener(listener);
+    }
+
+    public void removeNoteListener(NoteListener listener) {
+        listenerList.removeListener(listener);
+    }
+
     /**
      * Get the music beat at a precise beat position
      * @param beatNumber the beat position
@@ -378,6 +407,72 @@ public class MusicBar {
 
         boolean hasSpecialLineStructure() {
             return specialLineStructure != null;
+        }
+    }
+
+    /** A class to handle the listeners
+     */
+    private class MusicBarListenerList {
+
+        private List<BeatStructureListener> beatStructureListeners = new ArrayList<>();
+        private List<LineStructureListener> lineStructureListeners = new ArrayList<>();
+        private List<NoteListener> noteListeners = new ArrayList<>();
+
+        void addListener(BeatStructureListener listener) {
+            beatStructureListeners.add(listener);
+        }
+
+        void removeListener(BeatStructureListener listener) {
+            beatStructureListeners.remove(listener);
+        }
+
+        void addListener(LineStructureListener listener) {
+            lineStructureListeners.add(listener);
+        }
+
+        void removeListener(LineStructureListener listener) {
+            lineStructureListeners.remove(listener);
+        }
+
+        void addListener(NoteListener listener) {
+            noteListeners.add(listener);
+        }
+
+        void removeListener(NoteListener listener) {
+            noteListeners.remove(listener);
+        }
+
+        void notifyAllAddedBeatStructure(MusicBar source, int beat) {
+            for (BeatStructureListener listener : beatStructureListeners) {
+                listener.addedBeatStructure(source, beat);
+            }
+        }
+        void notifyAllRemovedBeatStructure(MusicBar source, int beat) {
+            for (BeatStructureListener listener : beatStructureListeners) {
+                listener.removedBeatStructure(source, beat);
+            }
+        }
+
+        void notifyAllAddedLineStructure(MusicBar source, int beat) {
+            for (LineStructureListener listener : lineStructureListeners) {
+                listener.addedLineStructure(source, beat);
+            }
+        }
+        void notifyAllRemovedLineStructure(MusicBar source, int beat) {
+            for (LineStructureListener listener : lineStructureListeners) {
+                listener.addedLineStructure(source, beat);
+            }
+        }
+
+        void notifyAllAddedNote(MusicBar source, String lineType, int beat, int note) {
+            for (NoteListener listener : noteListeners) {
+                listener.addedNote(source, lineType, beat, note);
+            }
+        }
+        void notifyAllRemovedNote(MusicBar source, String lineType, int beat, int note) {
+            for (NoteListener listener : noteListeners) {
+                listener.removedNote(source, lineType, beat, note);
+            }
         }
     }
 }
