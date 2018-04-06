@@ -120,7 +120,7 @@ public abstract class AbstractPartitionPlayer implements PartitionPlayer {
         @Override
         public void run() {
 
-            int nbBars = partition.getMusicBars().size();
+            int nbBars = partition.getMusicBarNumber();
             int nbBeats = partition.getSettings().notesNumber;
             float timeBetweenNoteValue = 60000 / partition.getSettings().tempo; // The time (in ms) between 2 notes
             List<NoteDelay> noteDelays = new ArrayList<>(); // A list with the time of all the notes
