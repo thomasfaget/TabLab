@@ -23,7 +23,8 @@ public class MusicBar {
         this.settings = settings;
     }
 
-    /** Create a empty MusicBar, with the data in the setting object
+    /**
+     * Create a empty MusicBar, according to the data contained in the settings (number of beats, types of line, ect..)
      */
     public void createEmptyBar() {
         for (int i = 0; i < settings.notesNumber; i++) {
@@ -55,6 +56,7 @@ public class MusicBar {
         Notes notes = getNotesAt(lineType, beatNumber);
         if (notes != null) {
             notes.addNote(noteNumber);
+            listenerList.notifyAllAddedNote(this, lineType, beatNumber, noteNumber);
         }
     }
 
@@ -68,6 +70,7 @@ public class MusicBar {
         Notes notes = getNotesAt(lineType, beatNumber);
         if (notes != null) {
             notes.removeNote(noteNumber);
+            listenerList.notifyAllRemovedNote(this, lineType, beatNumber, noteNumber);
         }
     }
 
@@ -102,8 +105,14 @@ public class MusicBar {
      */
     void setCompressedNotes(String lineType, int beatNumber, long notes) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
-        if (musicBeat != null)
-            musicBeat.put(lineType, new Notes(notes));
+        if (musicBeat != null) {
+            Notes oldNotes = getNotesAt(lineType, beatNumber);
+            Notes newNotes = new Notes(notes);
+            musicBeat.put(lineType, newNotes);
+
+            // Listeners
+            handleListenersOnNotesCopy(oldNotes, newNotes, lineType, beatNumber, getBeatStructure(beatNumber).size());
+        }
     }
 
     /**
@@ -141,6 +150,8 @@ public class MusicBar {
                 }
             }
         }
+
+        // TODO handle beat structure listeners
     }
 
     /**
@@ -191,6 +202,8 @@ public class MusicBar {
             newMusicBeat.specialLineStructure = structure;
             musicBeats.set(beatNumber-1, newMusicBeat);
         }
+
+        // TODO handle line structure listeners
     }
 
     /**
@@ -253,6 +266,7 @@ public class MusicBar {
                 if (musicBeat2.containsKey(lineType)) {
                     musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
                 }
+                // TODO handle listeners
             }
         }
     }
@@ -269,7 +283,11 @@ public class MusicBar {
         MusicBeat musicBeat2 = getBeatAt(beatNumberToPaste);
 
         if (musicBeat1 != null && musicBeat2 != null && musicBeat2.containsKey(lineType)) {
-            musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+            Notes oldNotes = getNotesAt(lineType, beatNumberToPaste);
+            Notes newNotes = changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste));
+            musicBeat2.put(lineType, newNotes);
+            // Handle listeners :
+            handleListenersOnNotesCopy(oldNotes, newNotes, lineType, beatNumberToPaste, getBeatStructure(beatNumberToPaste).size());
         }
     }
 
@@ -392,6 +410,27 @@ public class MusicBar {
         return newMusicBeat;
     }
 
+    /** handle the listener calls when copy notes on a entire beat
+     *
+     * @param oldNotes the notes before the copy
+     * @param newNotes the notes after the copy
+     * @param lineType the line type
+     * @param beatNumber the beat index
+     * @param nbNotes the number of notes in the beat
+     */
+    private void handleListenersOnNotesCopy(Notes oldNotes, Notes newNotes, String lineType, int beatNumber, int nbNotes) {
+        for (int note = 1; note <= nbNotes; note++) {
+            // Note addition
+            if (!oldNotes.isNote(note) && newNotes.isNote(note)) {
+                listenerList.notifyAllAddedNote(this, lineType, beatNumber, note);
+            }
+            // Note deletion
+            else if (oldNotes.isNote(note) && !newNotes.isNote(note)) {
+                listenerList.notifyAllRemovedNote(this, lineType, beatNumber, note);
+            }
+        }
+    }
+
     /**
      * The MusicBeat contains all the information of a music bar on the duration of a beat
      * Contains Notes and alternative structures
@@ -421,7 +460,6 @@ public class MusicBar {
         void addListener(BeatStructureListener listener) {
             beatStructureListeners.add(listener);
         }
-
         void removeListener(BeatStructureListener listener) {
             beatStructureListeners.remove(listener);
         }
@@ -429,7 +467,6 @@ public class MusicBar {
         void addListener(LineStructureListener listener) {
             lineStructureListeners.add(listener);
         }
-
         void removeListener(LineStructureListener listener) {
             lineStructureListeners.remove(listener);
         }
@@ -437,7 +474,6 @@ public class MusicBar {
         void addListener(NoteListener listener) {
             noteListeners.add(listener);
         }
-
         void removeListener(NoteListener listener) {
             noteListeners.remove(listener);
         }
