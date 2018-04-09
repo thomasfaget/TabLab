@@ -228,7 +228,6 @@ public class FileManager {
 
     private static MusicBar createMusicBar(Element bar, PartitionSettings partitionSettings) {
         MusicBar musicBar = new MusicBar(partitionSettings);
-        musicBar.createEmptyBar();
 
         List<Element> beats = bar.getChildren(BEAT);
         Collections.sort(beats, new Comparator<Element>() {
