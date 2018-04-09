@@ -113,7 +113,7 @@ public class MusicBar {
     public void setSpecialBeatStructure(BeatStructure structure, int beatNumber) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
         if (musicBeat != null) {
-            BeatStructure oldBeatStructure = musicBeat.hasSpecialBeatStructure() ? musicBeat.specialBeatStructure : settings.beatStructure;
+            BeatStructure oldBeatStructure = getBeatStructure(beatNumber);
             musicBeat.specialBeatStructure = structure;
 
             // Update the notes, to match with the new structure
@@ -182,7 +182,7 @@ public class MusicBar {
     public void setSpecialLineStructure(LineStructure structure, int beatNumber) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
         if (musicBeat != null) {
-            LineStructure oldLineStructure = musicBeat.hasSpecialLineStructure() ? musicBeat.specialLineStructure : settings.lineStructure;
+            LineStructure oldLineStructure = getLineStructure(beatNumber);
             MusicBeat newMusicBeat = changeNotesLineStructure(musicBeat, oldLineStructure, structure);
             newMusicBeat.specialLineStructure = structure;
             musicBeats.set(beatNumber-1, newMusicBeat);
