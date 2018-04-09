@@ -21,29 +21,7 @@ public class MusicBar {
     public MusicBar(PartitionSettings settings) {
         this.musicBeats = new ArrayList<>();
         this.settings = settings;
-    }
-
-    /**
-     * Create a empty MusicBar, according to the data contained in the settings (number of beats, types of line, ect..)
-     */
-    public void createEmptyBar() {
-        for (int i = 0; i < settings.notesNumber; i++) {
-            MusicBeat musicBeat = new MusicBeat();
-            for (String lineType : settings.lineStructure) {
-                musicBeat.put(lineType, new Notes());
-            }
-            musicBeats.add(musicBeat);
-        }
-    }
-
-    /**
-     * Add a empty line in the music bar
-     * @param lineType the type of the line
-     */
-    public void addEmptyLine(String lineType) {
-        for (MusicBeat musicBeat : musicBeats) {
-            musicBeat.put(lineType, new Notes());
-        }
+        createEmptyBar();
     }
 
     /**
@@ -428,6 +406,19 @@ public class MusicBar {
             else if (oldNotes.isNote(note) && !newNotes.isNote(note)) {
                 listenerList.notifyAllRemovedNote(this, lineType, beatNumber, note);
             }
+        }
+    }
+
+    /**
+     * Create a empty MusicBar, according to the data contained in the settings (number of beats, types of line, ect..)
+     */
+    private void createEmptyBar() {
+        for (int i = 0; i < settings.notesNumber; i++) {
+            MusicBeat musicBeat = new MusicBeat();
+            for (String lineType : settings.lineStructure) {
+                musicBeat.put(lineType, new Notes());
+            }
+            musicBeats.add(musicBeat);
         }
     }
 
