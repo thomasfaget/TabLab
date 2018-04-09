@@ -88,6 +88,7 @@ public class MusicPartition {
      */
     public void setMusicBar(int index, MusicBar musicBar) {
         musicBars.set(index-1, musicBar);
+        listenerList.notifyAllAddedMusicBar(index);
     }
 
     /**
