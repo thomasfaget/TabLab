@@ -104,7 +104,7 @@ public class MusicBar {
     }
 
     /**
-     * Add a alternative beat structure in bar for a specific beat number
+     * Add an alternative beat structure in bar for a specific beat number
      * Override the previous structure if there is already a alternative structure
      * Use 'null' as parameter to remove the special structure
      * @param structure the alternative beat structure to use on the beat, set null the remove the current alternative structure
@@ -132,7 +132,7 @@ public class MusicBar {
                 // structure added or a new is set
                 listenerList.notifyAllAddedBeatStructure(this, beatNumber);
             }
-            if (structure == null && oldBeatStructure != null) {
+            else if (structure == null && oldBeatStructure != null) {
                 // the structure is removed
                 listenerList.notifyAllRemovedBeatStructure(this, beatNumber);
             }
@@ -173,7 +173,7 @@ public class MusicBar {
     }
 
     /**
-     * Add a alternative line structure in bar for a specific beat number
+     * Add an alternative line structure in bar for a specific beat number
      * Override the previous structure if there is already a alternative structure
      * Use 'null' as parameter to remove the special structure
      * @param structure the alternative line structure to use on the beat, set null the remove the current alternative structure
@@ -183,16 +183,23 @@ public class MusicBar {
         MusicBeat musicBeat = getBeatAt(beatNumber);
         if (musicBeat != null) {
             LineStructure oldLineStructure = getLineStructure(beatNumber);
-            MusicBeat newMusicBeat = changeNotesLineStructure(musicBeat, oldLineStructure, structure);
-            newMusicBeat.specialLineStructure = structure;
-            musicBeats.set(beatNumber-1, newMusicBeat);
+            if (structure != null && structure != oldLineStructure) {
+                MusicBeat newMusicBeat = changeNotesLineStructure(musicBeat, oldLineStructure, structure);
+                newMusicBeat.specialLineStructure = structure;
+                musicBeats.set(beatNumber-1, newMusicBeat);
+            }
+            else if (structure == null) {
+                MusicBeat newMusicBeat = changeNotesLineStructure(musicBeat, oldLineStructure, settings.lineStructure);
+                newMusicBeat.specialLineStructure = null;
+                musicBeats.set(beatNumber-1, newMusicBeat);
+            }
 
             // Handle listeners
             if (structure != null && !structure.equals(oldLineStructure)) {
                 // structure added or a new is set
                 listenerList.notifyAllAddedLineStructure(this, beatNumber);
             }
-            if (structure == null) {
+            else if (structure == null) {
                 // the structure is removed
                 listenerList.notifyAllRemovedLineStructure(this, beatNumber);
             }
@@ -524,7 +531,7 @@ public class MusicBar {
         }
         void notifyAllRemovedLineStructure(MusicBar source, int beat) {
             for (LineStructureListener listener : lineStructureListeners) {
-                listener.addedLineStructure(source, beat);
+                listener.removedLineStructure(source, beat);
             }
         }
 
