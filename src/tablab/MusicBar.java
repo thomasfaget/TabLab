@@ -190,11 +190,11 @@ public class MusicBar {
             // Handle listeners
             if (structure != null && !structure.equals(oldLineStructure)) {
                 // structure added or a new is set
-                listenerList.notifyAllAddedBeatStructure(this, beatNumber);
+                listenerList.notifyAllAddedLineStructure(this, beatNumber);
             }
             if (structure == null) {
                 // the structure is removed
-                listenerList.notifyAllRemovedBeatStructure(this, beatNumber);
+                listenerList.notifyAllRemovedLineStructure(this, beatNumber);
             }
         }
 
@@ -256,16 +256,31 @@ public class MusicBar {
         MusicBeat musicBeat1 = getBeatAt(beatNumberToCopy);
         MusicBeat musicBeat2 = getBeatAt(beatNumberToPaste);
 
+        List<String> lines = new ArrayList<>();
+        List<Notes> oldNotesList = new ArrayList<>();
+        List<Notes> newNotesList = new ArrayList<>();
+
         if (musicBeat1 != null && musicBeat2 != null) {
             for (String lineType : getLineStructure(beatNumberToPaste)) {
                 if (getLineStructure(beatNumberToCopy).contains(lineType) && musicBeat2.containsKey(lineType) && musicBeat1.containsKey(lineType)) {
-                    musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+                    Notes oldNotes = getNotesAt(lineType, beatNumberToPaste);
+                    Notes newNotes = changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste));
+
+                    // Add a copy of old et new notes (to handle the listeners)
+                    if (oldNotes != null && newNotes != null) {
+                        lines.add(lineType);
+                        oldNotesList.add(oldNotes.copyNotes());
+                        newNotesList.add(newNotes.copyNotes());
+                    }
+
+                    musicBeat2.put(lineType, newNotes);
                 }
             }
             // Handle listeners
-            for (String lineType : getLineStructure(beatNumberToCopy)) {
-                Notes oldNotes = getNotesAt(lineType, beatNumberToPaste);
-                Notes newNotes = changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste));
+            for (int i = 0; i < lines.size(); i++) {
+                String lineType = lines.get(i);
+                Notes oldNotes = oldNotesList.get(i);
+                Notes newNotes = newNotesList.get(i);
                 handleListenersOnNotesCopy(oldNotes, newNotes, lineType, beatNumberToPaste, getBeatStructure(beatNumberToPaste).size());
             }
         }
