@@ -16,28 +16,7 @@ public class MusicBar {
     public MusicBar(PartitionSettings settings) {
         this.musicBeats = new ArrayList<>();
         this.settings = settings;
-    }
-
-    /** Create a empty MusicBar, with the data in the setting object
-     */
-    public void createEmptyBar() {
-        for (int i = 0; i < settings.notesNumber; i++) {
-            MusicBeat musicBeat = new MusicBeat();
-            for (String lineType : settings.lineStructure) {
-                musicBeat.put(lineType, new Notes());
-            }
-            musicBeats.add(musicBeat);
-        }
-    }
-
-    /**
-     * Add a empty line in the music bar
-     * @param lineType the type of the line
-     */
-    public void addEmptyLine(String lineType) {
-        for (MusicBeat musicBeat : musicBeats) {
-            musicBeat.put(lineType, new Notes());
-        }
+        createEmptyBar();
     }
 
     /**
@@ -265,6 +244,18 @@ public class MusicBar {
 
         if (musicBeat1 != null && musicBeat2 != null && musicBeat2.containsKey(lineType)) {
             musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
+        }
+    }
+
+    /** Create a empty MusicBar, with the data in the setting object
+     */
+    private void createEmptyBar() {
+        for (int i = 0; i < settings.notesNumber; i++) {
+            MusicBeat musicBeat = new MusicBeat();
+            for (String lineType : settings.lineStructure) {
+                musicBeat.put(lineType, new Notes());
+            }
+            musicBeats.add(musicBeat);
         }
     }
 
