@@ -121,15 +121,22 @@ public class MusicBar {
                 for (String lineType : musicBeat.keySet()) {
                     musicBeat.put(lineType, changeNotesBeatStructure(musicBeat.get(lineType), oldBeatStructure, structure));
                 }
-            }
-            else if (structure == null) {
+            } else if (structure == null) {
                 for (String lineType : musicBeat.keySet()) {
                     musicBeat.put(lineType, changeNotesBeatStructure(musicBeat.get(lineType), oldBeatStructure, settings.beatStructure));
                 }
             }
-        }
 
-        // TODO handle beat structure listeners
+            // Handle listeners
+            if (structure != null && !structure.equals(oldBeatStructure)) {
+                // structure added or a new is set
+                listenerList.notifyAllAddedBeatStructure(this, beatNumber);
+            }
+            if (structure == null && oldBeatStructure != null) {
+                // the structure is removed
+                listenerList.notifyAllRemovedBeatStructure(this, beatNumber);
+            }
+        }
     }
 
     /**
@@ -175,13 +182,23 @@ public class MusicBar {
     public void setSpecialLineStructure(LineStructure structure, int beatNumber) {
         MusicBeat musicBeat = getBeatAt(beatNumber);
         if (musicBeat != null) {
-            LineStructure oldBeatStructure = musicBeat.hasSpecialLineStructure() ? musicBeat.specialLineStructure : settings.lineStructure;
-            MusicBeat newMusicBeat = changeNotesLineStructure(musicBeat, oldBeatStructure, structure);
+            LineStructure oldLineStructure = musicBeat.hasSpecialLineStructure() ? musicBeat.specialLineStructure : settings.lineStructure;
+            MusicBeat newMusicBeat = changeNotesLineStructure(musicBeat, oldLineStructure, structure);
             newMusicBeat.specialLineStructure = structure;
             musicBeats.set(beatNumber-1, newMusicBeat);
+
+            // Handle listeners
+            if (structure != null && !structure.equals(oldLineStructure)) {
+                // structure added or a new is set
+                listenerList.notifyAllAddedBeatStructure(this, beatNumber);
+            }
+            if (structure == null) {
+                // the structure is removed
+                listenerList.notifyAllRemovedBeatStructure(this, beatNumber);
+            }
         }
 
-        // TODO handle line structure listeners
+
     }
 
     /**
@@ -244,7 +261,12 @@ public class MusicBar {
                 if (getLineStructure(beatNumberToCopy).contains(lineType) && musicBeat2.containsKey(lineType) && musicBeat1.containsKey(lineType)) {
                     musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
                 }
-                // TODO handle listeners
+            }
+            // Handle listeners
+            for (String lineType : getLineStructure(beatNumberToCopy)) {
+                Notes oldNotes = getNotesAt(lineType, beatNumberToPaste);
+                Notes newNotes = changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste));
+                handleListenersOnNotesCopy(oldNotes, newNotes, lineType, beatNumberToPaste, getBeatStructure(beatNumberToPaste).size());
             }
         }
     }
