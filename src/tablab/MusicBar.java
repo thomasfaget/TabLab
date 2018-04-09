@@ -262,8 +262,8 @@ public class MusicBar {
         MusicBeat musicBeat2 = getBeatAt(beatNumberToPaste);
 
         if (musicBeat1 != null && musicBeat2 != null) {
-            for (String lineType : musicBeat1.keySet()) {
-                if (musicBeat2.containsKey(lineType)) {
+            for (String lineType : getLineStructure(beatNumberToPaste)) {
+                if (getLineStructure(beatNumberToCopy).contains(lineType) && musicBeat2.containsKey(lineType) && musicBeat1.containsKey(lineType)) {
                     musicBeat2.put(lineType, changeNotesBeatStructure(musicBeat1.get(lineType), getBeatStructure(beatNumberToCopy), getBeatStructure(beatNumberToPaste)));
                 }
                 // TODO handle listeners
