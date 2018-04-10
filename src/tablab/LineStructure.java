@@ -6,7 +6,7 @@ import java.util.*;
  * Prevents duplicate elements in the structure
  *
  */
-public class LineStructure extends ArrayList<String> {
+public class LineStructure implements Iterable<String> {
 
     // Classic :
     public static String DO = "Do";
@@ -36,66 +36,48 @@ public class LineStructure extends ArrayList<String> {
     public static String OPEN_HIT_HAT = "Open Hit-Hat";
 
 
-    // Override Add methods and constructor to prevent duplicate elements
+    private List<String> structure = new ArrayList<>();
 
-    public LineStructure() {
-        super();
-    }
-
-    public LineStructure(int initialCapacity) {
-        super(initialCapacity);
-    }
 
     public LineStructure(Collection<? extends String> c) {
-        super();
-        this.addAll(c);
-    }
-
-    @Override
-    public boolean add(String e) {
-        return !this.contains(e) && super.add(e);
-    }
-
-    @Override
-    public void add(int index, String e) {
-        if (!this.contains(e)) {
-            super.add(index, e);
-        }
-    }
-
-
-    @Override
-    public boolean addAll(Collection<? extends String> c) {
-
         // Copy the list
         List<String> c2 = new ArrayList<>(c);
 
         // Remove duplicate elements in c2 and current list
         List<String> c3 = distinct(c2);
         for (String s : c2) {
-            if (this.contains(s)) {
+            if (structure.contains(s)) {
                 c3.remove(s);
             }
         }
-        return super.addAll(c3);
+        structure.addAll(c3);
     }
 
-    @Override
-    public boolean addAll(int index, Collection<? extends String> c) {
-
-        // Copy the list
-        List<String> c2 = new ArrayList<>(c);
-
-        // Remove duplicate elements in c2 and current list
-        List<String> c3 = distinct(c2);
-        for (String s : c2) {
-            if (this.contains(s)) {
-                c3.remove(s);
-            }
-        }
-        return super.addAll(index, c3);
+    /**
+     * get the element at the given index
+     * @param index the index
+     * @return the element at the index
+     */
+    public String get(int index) {
+        return structure.get(index);
     }
 
+    /**
+     * Check if the structure contains the given line
+     * @param lineType the line
+     * @return true if the structure contains the line
+     */
+    public boolean contains(String lineType) {
+        return structure.contains(lineType);
+    }
+
+    /**
+     * Get the number of line in the structure
+     * @return the number of line
+     */
+    public int size() {
+        return structure.size();
+    }
 
     /**
      * Get the intersection between this structure and an other
@@ -104,14 +86,14 @@ public class LineStructure extends ArrayList<String> {
      * @return the intersection of the structure
      */
     public LineStructure getIntersection(LineStructure otherStructure) {
-        LineStructure list = new LineStructure();
+        List<String> list = new ArrayList<>();
 
-        for (String s : this) {
-            if (otherStructure.contains(s)) {
+        for (String s : this.structure) {
+            if (otherStructure.structure.contains(s)) {
                 list.add(s);
             }
         }
-        return list;
+        return new LineStructure(list);
     }
 
     /**
@@ -121,15 +103,20 @@ public class LineStructure extends ArrayList<String> {
      * @return the union of the structure
      */
     public LineStructure getUnion(LineStructure otherStructure) {
-        LineStructure resultStructure = (LineStructure) this.clone();
+        ArrayList<String> resultStructure = new ArrayList<>(this.structure);
 
-        for (String s : otherStructure) {
+        for (String s : otherStructure.structure) {
             if (!resultStructure.contains(s)) {
                 resultStructure.add(s);
             }
         }
 
-        return resultStructure;
+        return new LineStructure(resultStructure);
+    }
+
+    @Override
+    public String toString() {
+        return structure.toString();
     }
 
     /**
@@ -139,7 +126,7 @@ public class LineStructure extends ArrayList<String> {
      * @return the distinct list
      */
     private static List<String> distinct(List<String> structure) {
-        LineStructure resultStructure = new LineStructure();
+        List<String> resultStructure = new ArrayList<>();
         for (String s : structure) {
             if (!resultStructure.contains(s)) {
                 resultStructure.add(s);
@@ -148,5 +135,43 @@ public class LineStructure extends ArrayList<String> {
         return resultStructure;
     }
 
+    @Override
+    public Iterator<String> iterator() {
+        return new LineStructureIterator();
+    }
 
+
+    /** An iterator for the LineStructure
+     */
+    private class LineStructureIterator implements Iterator<String> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < structure.size();
+        }
+
+        @Override
+        public String next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return structure.get(index++);
+        }
+
+        @Override
+        public void remove() {
+            if (index < 0) {
+                throw  new IllegalStateException();
+            }
+
+            try {
+                structure.remove(--index);
+            }
+            catch (IndexOutOfBoundsException e) {
+                throw new ConcurrentModificationException();
+            }
+        }
+    }
 }
