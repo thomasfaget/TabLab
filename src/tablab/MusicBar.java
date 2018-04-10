@@ -313,26 +313,50 @@ public class MusicBar {
         }
     }
 
+    /**
+     * Add a BeatStructureListener to the MusicBar
+     * @param listener the listener to add
+     */
     public void addBeatStructureListener(BeatStructureListener listener) {
         listenerList.addListener(listener);
     }
 
+    /**
+     * Remove a BeatStructureListener from the MusicBar
+     * @param listener the listener to add
+     */
     public void removeBeatStructureListener(BeatStructureListener listener) {
         listenerList.removeListener(listener);
     }
 
+    /**
+     * Add a LineStructureListener to the MusicBar
+     * @param listener the listener to add
+     */
     public void addLineStructureListener(LineStructureListener listener) {
         listenerList.addListener(listener);
     }
 
+    /**
+     * Remove a LineStructureListener from the MusicBar
+     * @param listener the listener to add
+     */
     public void removeLineStructureListener(LineStructureListener listener) {
         listenerList.removeListener(listener);
     }
 
+    /**
+     * Add a NoteListener to the MusicBar
+     * @param listener the listener to add
+     */
     public void addNoteListener(NoteListener listener) {
         listenerList.addListener(listener);
     }
 
+    /**
+     * Remove a NoteListener from the MusicBar
+     * @param listener the listener to add
+     */
     public void removeNoteListener(NoteListener listener) {
         listenerList.removeListener(listener);
     }
