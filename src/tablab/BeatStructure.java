@@ -6,7 +6,9 @@ import java.util.*;
  * The time of a note are represented with the inverse of the duration of a note (for example 4 is 1/4 of a beat)
  * the sum of the inverse of the number in structure has to be equal to 1
  */
-public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
+public class BeatStructure implements Iterable<BeatStructure.NoteTime> {
+
+    private List<NoteTime> structure = new ArrayList<>();
 
     // Basic notes, with time value
     public enum NoteTime {
@@ -30,18 +32,25 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
         }
     }
 
-    
-    public BeatStructure() {
-        super();
-    }
-
-    public BeatStructure(int initialCapacity) {
-        super(initialCapacity);
-    }
-
     public BeatStructure(Collection<? extends NoteTime> c) {
-        super();
-        this.addAll(c);
+        structure.addAll(c);
+    }
+
+    /**
+     * get the element at the given index
+     * @param index the index
+     * @return the element at the index
+     */
+    public NoteTime get(int index) {
+        return structure.get(index);
+    }
+
+    /**
+     * Get the number of notes (pitch value) in the structure
+     * @return the number of notes
+     */
+    public int size() {
+        return structure.size();
     }
 
     /**
@@ -54,8 +63,8 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
         List<Fraction> fractions = new ArrayList<>();
         fractions.add(new Fraction(0,1));
 
-        for (int i = 0; i < size()-1; i++ ) {
-            Fraction fraction = new Fraction(settings.notesValue, get(i).getTime());
+        for (int i = 0; i < structure.size()-1; i++ ) {
+            Fraction fraction = new Fraction(settings.notesValue, structure.get(i).getTime());
             fraction.add(fractions.get(fractions.size()-1));
             fractions.add(fraction);
         }
@@ -73,6 +82,45 @@ public class BeatStructure extends ArrayList<BeatStructure.NoteTime> {
             sum +=  (float) settings.notesValue / (float) noteTime.getTime();
         }
         return Math.abs(sum - 1.0f) <= eps;
+    }
+
+    @Override
+    public Iterator<NoteTime> iterator() {
+        return new BeatStructureIterator();
+    }
+
+    /** An iterator for the BeatStructure
+     */
+    private class BeatStructureIterator implements Iterator<NoteTime> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < structure.size();
+        }
+
+        @Override
+        public NoteTime next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return structure.get(index++);
+        }
+
+        @Override
+        public void remove() {
+            if (index < 0) {
+                throw  new IllegalStateException();
+            }
+
+            try {
+                structure.remove(--index);
+            }
+            catch (IndexOutOfBoundsException e) {
+                throw new ConcurrentModificationException();
+            }
+        }
     }
 }
 

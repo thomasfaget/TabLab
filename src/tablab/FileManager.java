@@ -9,10 +9,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class FileManager {
 
@@ -211,11 +208,11 @@ public class FileManager {
     }
 
     private static BeatStructure createBeatStructureFromString(String structure) {
-        BeatStructure beatStructure = new BeatStructure();
+        List<BeatStructure.NoteTime> beatStructure = new ArrayList<>();
         for (String s : structure.split(SEP)) {
             beatStructure.add(BeatStructure.NoteTime.valueOf(s));
         }
-        return beatStructure;
+        return new BeatStructure(beatStructure);
     }
 
     private static LineStructure createLineStructureFromString(String structure) {
