@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 public class MusicPartition {
 
@@ -137,7 +138,7 @@ public class MusicPartition {
         Map<String, StringBuilder> parts = new HashMap<>();
 
         // Create the full line structure :
-        LineStructure commonLineStructure = new LineStructure();
+        LineStructure commonLineStructure = new LineStructure(Collections.<String>emptyList());
         for (MusicBar musicBar : musicBars) {
             for (int i = 1; i <= settings.notesNumber; i++) {
                 LineStructure structure = musicBar.getLineStructure(i);
