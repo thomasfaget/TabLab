@@ -202,9 +202,7 @@ public class FileManager {
 
     private static LineStructure createLineStructure(Element structure) {
         String line = structure.getContent(0).getValue();
-        LineStructure lineStructure = new LineStructure();
-        lineStructure.addAll(Arrays.asList(line.split(SEP)));
-        return lineStructure;
+        return new LineStructure(Arrays.asList(line.split(SEP)));
     }
 
     private static BeatStructure createBeatStructure(Element structure) {
@@ -221,9 +219,7 @@ public class FileManager {
     }
 
     private static LineStructure createLineStructureFromString(String structure) {
-        LineStructure lineStructure = new LineStructure();
-        lineStructure.addAll(Arrays.asList(structure.split(SEP)));
-        return lineStructure;
+        return new LineStructure(Arrays.asList(structure.split(SEP)));
     }
 
     private static MusicBar createMusicBar(Element bar, PartitionSettings partitionSettings) {
