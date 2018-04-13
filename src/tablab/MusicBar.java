@@ -313,6 +313,7 @@ public class MusicBar {
         }
     }
 
+
     /**
      * Add a BeatStructureListener to the MusicBar
      * @param listener the listener to add
