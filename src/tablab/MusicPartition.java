@@ -2,7 +2,7 @@ package tablab;
 
 import java.util.*;
 
-public class MusicPartition {
+public class MusicPartition implements Iterable<MusicBar> {
 
     private String title;
     private String author;
@@ -155,5 +155,44 @@ public class MusicPartition {
 
         return String.valueOf(string);
 
+    }
+
+    @Override
+    public Iterator<MusicBar> iterator() {
+        return new MusicBarIterator();
+    }
+
+    /** An iterator for the LineStructure
+     */
+    private class MusicBarIterator implements Iterator<MusicBar> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < musicBars.size();
+        }
+
+        @Override
+        public MusicBar next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return musicBars.get(index++);
+        }
+
+        @Override
+        public void remove() {
+            if (index < 0) {
+                throw  new IllegalStateException();
+            }
+
+            try {
+                musicBars.remove(--index);
+            }
+            catch (IndexOutOfBoundsException e) {
+                throw new ConcurrentModificationException();
+            }
+        }
     }
 }
