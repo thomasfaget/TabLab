@@ -60,7 +60,7 @@ public class PartitionFileManager {
         partition.addContent(settings);
 
         Element bars = new Element(BARS);
-        for (int i = 0; i < musicPartition.getMusicBarNumber(); i++) {
+        for (int i = 1; i <= musicPartition.getMusicBarNumber(); i++) {
             Element bar = getMusicBar(musicPartition.getMusicBar(i), musicPartition.getSettings());
             bar.setAttribute(NUMBER, String.valueOf(i+1));
             bars.addContent(bar);
