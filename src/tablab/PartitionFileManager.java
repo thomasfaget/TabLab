@@ -12,7 +12,7 @@ import javax.xml.transform.dom.DOMSource;
 import java.io.*;
 import java.util.*;
 
-public class FileManager {
+public class PartitionFileManager {
 
     private static String SEP = "//";
 
