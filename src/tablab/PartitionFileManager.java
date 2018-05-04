@@ -11,7 +11,7 @@ import org.jdom2.output.XMLOutputter;
 import java.io.*;
 import java.util.*;
 
-public class FileManager {
+public class PartitionFileManager {
 
     private static String SEP = "//";
 
