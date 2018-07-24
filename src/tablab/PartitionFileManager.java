@@ -8,6 +8,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import javax.xml.transform.dom.DOMSource;
 import java.io.*;
 import java.util.*;
 
@@ -44,9 +45,22 @@ public class PartitionFileManager {
         Element racine = getPartition(musicPartition);
         Document document = new Document(racine);
 
+
         XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
         xmlOutputter.output(document, new FileOutputStream(path));
 
+    }
+
+    /** Return a string with the partition parsed as a xml file
+     *
+     * @param musicPartition the music partition to write
+     */
+    public static String exportToXmlString(MusicPartition musicPartition) {
+
+        Element racine = getPartition(musicPartition);
+        Document document = new Document(racine);
+
+        return new XMLOutputter().outputString(document);
     }
 
     private static Element getPartition(MusicPartition musicPartition) {
