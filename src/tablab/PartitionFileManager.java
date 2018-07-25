@@ -8,7 +8,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import javax.xml.transform.dom.DOMSource;
 import java.io.*;
 import java.util.*;
 
@@ -174,6 +173,27 @@ public class PartitionFileManager {
 
         Element racine = document.getRootElement();
         return createPartition(racine);
+    }
+
+    public static MusicPartition importFromXmlString(String string) throws JDOMException, IOException {
+        File file = new File("temp.xml");
+        FileWriter writer = new FileWriter(file);
+
+        writer.write(string);
+        writer.flush();
+        writer.close();
+
+        MusicPartition partition = importFromXmlFile(file);
+        file.delete();
+
+        return partition;
+    }
+
+    public static MusicPartition importFromXmlFile(File file) throws JDOMException, IOException {
+        SAXBuilder sxb = new SAXBuilder();
+        Document document = sxb.build(file);
+
+        return createPartition(document.getRootElement());
     }
 
     private static MusicPartition createPartition(Element partition) {
